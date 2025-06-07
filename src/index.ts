@@ -5,18 +5,28 @@ import swagger from "@elysiajs/swagger";
 import { ErrorPlugin } from "@/core/base/errors";
 import { PropertyModule } from "@/modules/property";
 
-AppDataSource.initialize().then(async () =>
-  console.log("🗃️ Database connected with Bun")
-);
+AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
 const app = new Elysia()
-  .use(swagger())
+  .use(
+    swagger({
+      documentation: {
+        components: {
+          securitySchemes: {
+            jwt: {
+              type: "http",
+              scheme: "bearer",
+              bearerFormat: "JWT",
+            },
+          },
+        },
+      },
+    })
+  )
   .use(ErrorPlugin)
   .use(AuthModule)
   .use(PropertyModule)
   .get("/health", () => ({ status: "ok", runtime: "bun" }))
   .listen(3000);
 
-console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
-);
+console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);

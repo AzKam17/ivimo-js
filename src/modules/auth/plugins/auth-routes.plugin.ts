@@ -13,7 +13,15 @@ const eject = () => {
   });
 };
 
-export const AuthRoutesPlugin = new Elysia()
+export const AuthRoutesPlugin = new Elysia({
+  detail: {
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+  },
+})
   .use(AuthJWT)
   .derive(async ({ jwt, headers }) => {
     if (Guard.isEmpty(headers.authorization) || !headers.authorization!.startsWith("Bearer")) {
@@ -33,6 +41,6 @@ export const AuthRoutesPlugin = new Elysia()
     const user = await repository.findById(userId);
     if (!user) eject();
 
-    return {user : user as User };
+    return { user: user as User };
   })
   .as("scoped");
