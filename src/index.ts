@@ -12,11 +12,7 @@ const app = new Elysia()
   .use(swagger())
   .use(ErrorPlugin)
   .use(AuthModule)
-  .get("/", () => {
-    console.log(`🦊 Elysia is running`);
-    return "Hello from server";
-  })
-  .get("/health", () => ({ status: "ok", runtime: "bun" }))
+  .get("/health", () => ({ status: "ok" }))
   .listen(3000, () => {
     console.log(`🦊 Elysia is running`);
   });

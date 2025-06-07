@@ -38,6 +38,16 @@ export class BaseRepository<T extends BaseEntity> {
     });
   }
 
+  public async findOneBy(where: Partial<T>): Promise<T | null> {
+    return this.repository.findOne({
+      where: {
+       ...where,
+        isActive: true,
+        deletedAt: null,
+      } as FindOptionsWhere<T>,
+    });
+  }
+
   public async findBy(where: Partial<T>): Promise<T[]> {
     return this.repository.find({
       where: {

@@ -1,4 +1,3 @@
-import { RedisClient } from "bun";
 import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/interface";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
@@ -22,12 +21,7 @@ export class CreateUserCommand extends BaseCommand {
 }
 
 export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCommand, User> {
-  private readonly redis: RedisClient;
-
-  constructor(redis: RedisClient) {
-    this.redis = redis;
-    this.execute = this.execute.bind(this);
-  }
+  constructor() {}
 
   async execute(query: CreateUserCommand): Promise<User> {
     const repository = UserRepository.getInstance();
