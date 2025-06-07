@@ -2,11 +2,12 @@ import Elysia from "elysia";
 import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
 import { RedisPlugin } from "@/modules/config";
 import { CreateUserCommand, CreateUserCommandHandler } from "@/modules/auth/interface/commands";
-import { CreateUserDto, LoginDto } from "@/modules/auth/interface/dtos";
+import { ConfirmOtpDto, CreateUserDto, LoginDto } from "@/modules/auth/interface/dtos";
 import { routes } from "@/modules/auth/routes";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserResponse, UserResponseSchema } from "@/modules/auth/interface/user-http.response";
 import { LoginCommand, LoginCommandHandler } from "@/modules/auth/interface/commands/login.command";
+import { ConfirmOtpCommand, ConfirmOtpCommandHandler } from "@/modules/auth/interface/commands/confirm-otp.command";
 
 export const AuthController = new Elysia()
   .use(RedisPlugin)
@@ -15,6 +16,7 @@ export const AuthController = new Elysia()
       commands: [
         [CreateUserCommand, new CreateUserCommandHandler()],
         [LoginCommand, new LoginCommandHandler(decorator.redis)],
+        [ConfirmOtpCommand, new ConfirmOtpCommandHandler(decorator.redis)],
       ],
     });
   })
@@ -35,7 +37,7 @@ export const AuthController = new Elysia()
   )
   .post(
     routes.login,
-    async ({ body, commandMediator, set }: { body: any; commandMediator: CommandMediator, set: any }) => {
+    async ({ body, commandMediator, set }: { body: any; commandMediator: CommandMediator; set: any }) => {
       const result: User = await commandMediator.send(
         new LoginCommand({
           ...body,
@@ -48,5 +50,19 @@ export const AuthController = new Elysia()
     },
     {
       body: LoginDto,
+    }
+  )
+  .post(
+    routes.confirm_otp,
+    async ({ body, commandMediator }: { body: any; commandMediator: CommandMediator }) => {
+      const result: User = await commandMediator.send(
+        new ConfirmOtpCommand({
+          ...body,
+        })
+      );
+      return result;
+    },
+    {
+      body: ConfirmOtpDto,
     }
   );

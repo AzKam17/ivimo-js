@@ -23,6 +23,7 @@ export const Errors = {
 export const ErrorPlugin = new Elysia()
   .error(Errors)
   .onError(({ code, error, set }) => {
+    console.log(error);
     let message: string = "An unexpected error occurred";
 
     if (error instanceof BaseError) {
