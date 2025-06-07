@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { ValidationError } from "elysia";
 
 interface ErrorResponseProps {
   statusCode: number;
@@ -23,14 +23,23 @@ export const Errors = {
 export const ErrorPlugin = new Elysia()
   .error(Errors)
   .onError(({ code, error, set }) => {
-    console.error("🛑 Error caught:", error);
-    const statusCode = error instanceof BaseError ? error.statusCode : 500;
-    set.status = statusCode;
+    let message: string = "An unexpected error occurred";
+
+    if (error instanceof BaseError) {
+      set.status = error.statusCode;
+    }
+
+    if (error instanceof ValidationError && error.all?.[0]) {
+      const firstError = error.all[0];
+      message = firstError.summary ?? message;
+      if ('path' in firstError && firstError.path) {
+        message += ` (${firstError.path})`;
+      }
+    }
 
     return {
-      error: statusCode,
-      message: error instanceof BaseError ? error.message : "An unexpected error occurred",
+      error: set.status,
+      message,
     };
   })
-  .as('global')
-  ;
+  .as("global");

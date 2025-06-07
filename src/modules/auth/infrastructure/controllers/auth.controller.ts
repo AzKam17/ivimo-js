@@ -7,7 +7,7 @@ import { routes } from "@/modules/auth/routes";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserResponse, UserResponseSchema } from "@/modules/auth/interface/user-http.response";
 
-export const SignInController = new Elysia()
+export const AuthController = new Elysia()
   .use(RedisPlugin)
   .use(({ decorator }) => {
     return cqrs({
