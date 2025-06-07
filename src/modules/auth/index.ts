@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { AuthController } from "./infrastructure/controllers";
 import { UserRepository } from "./infrastructure/repositories/user.repository";
+import jwt from "@elysiajs/jwt";
 
 export const AuthRepositories = new Elysia({ name: "auth-repositories" }).decorate("userRepository", UserRepository);
 

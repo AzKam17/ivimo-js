@@ -1,4 +1,5 @@
 import { t } from "elysia";
+import { Timestamp } from "typeorm";
 
 export const UserResponseSchema = t.Object({
   id: t.String(),
@@ -8,7 +9,7 @@ export const UserResponseSchema = t.Object({
   phone_number: t.String(),
 });
 
-export interface UserResponseProps {
+interface UserResponseProps {
   id: string;
   first_name: string;
   last_name: string;
@@ -20,6 +21,24 @@ export class UserResponse {
   constructor(props: UserResponseProps) {
     return {
       ...props,
+    }
+  }
+}
+
+export const UserTokenResponseSchema = t.Object({
+  token: t.String(),
+  timestamp: t.Number(),
+});
+
+interface UserTokenResponseProps {
+  token: string;
+}
+
+export class UserTokenResponse {
+  constructor(props: UserTokenResponseProps) {
+    return {
+     ...props,
+     timestamp: (new Date()).getTime(),
     }
   }
 }

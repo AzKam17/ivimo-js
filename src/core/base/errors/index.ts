@@ -28,6 +28,7 @@ export const ErrorPlugin = new Elysia()
 
     if (error instanceof BaseError) {
       set.status = error.statusCode;
+      message = error.message;
     }
 
     if (error instanceof ValidationError && error.all?.[0]) {

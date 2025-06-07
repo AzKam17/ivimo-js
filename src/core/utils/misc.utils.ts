@@ -1,4 +1,3 @@
-// Generate per default 6 digit OTP
 export function randomOTP(params?: { length: number }) {
   const length = params?.length || 6;
   const max = Math.pow(10, length) - 1;
