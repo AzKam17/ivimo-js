@@ -1,10 +1,26 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
+import { Entity, Column } from "typeorm";
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class User extends BaseEntity {
+  @Column('varchar')
+  first_name: string;
+  
+  @Column('varchar')
+  last_name: string;
+  
+  @Column('varchar', { unique: true })
+  email: string;
+  
+  @Column('varchar', { length: 10 })
+  phone_number: string;
+  
+  @Column('varchar')
+  password: string;
 
-  @Column('varchar') // Specify the column type
-  firstName: string;
+  static create(props: Partial<User>): User {
+    const user = new User();
+    Object.assign(user, props);
+    return user;
+  }
 }
