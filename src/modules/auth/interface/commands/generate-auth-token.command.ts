@@ -1,5 +1,5 @@
 import { BaseError } from "@/core/base/errors";
-import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/interface";
+import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
 import { ACCESS_TOKEN_EXPIRATION_SECONDS, getExpTimestamp } from "@/core/utils";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { JWTOption } from "@elysiajs/jwt";

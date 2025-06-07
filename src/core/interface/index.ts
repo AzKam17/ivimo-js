@@ -1,2 +1,1 @@
-export * from './command.base'
-export * from './command-handler.base'
+export * from './position.interface'

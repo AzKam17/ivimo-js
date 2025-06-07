@@ -1,4 +1,4 @@
-import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/interface";
+import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { BaseError } from "@/core/base/errors";

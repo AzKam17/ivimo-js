@@ -1,4 +1,4 @@
-import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/interface";
+import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
 import { randomOTP } from "@/core/utils";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { RedisClient } from "bun";

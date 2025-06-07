@@ -1,0 +1,22 @@
+services:
+  postgis:
+    image: postgis/postgis:latest
+    mem_limit: 216M
+    cpus: "0.15"
+    environment:
+      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - '225immo_backend:/var/lib/postgresql/data:rw'
+    ports:
+      - '${DB_PORT}:5432'
+
+  
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+volumes:
+  225immo_backend:
