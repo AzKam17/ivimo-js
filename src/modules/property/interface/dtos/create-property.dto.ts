@@ -4,7 +4,7 @@ import { t } from "elysia";
 
 export const CreatePropertyDto = t.Object({
   name: t.String(),
-  price: t.String(),
+  price: t.Numeric(),
   ad_type: t.Enum(PropertyAdTypeEnum),
   type: t.String(),
   geolocation: GeolocationTransform,

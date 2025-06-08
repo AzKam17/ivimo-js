@@ -1,4 +1,4 @@
-import { ColumnNumericTransformer } from "@/core/infrastructure/database";
+import { MoneyTransformer } from "@/core/infrastructure/database";
 import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import type { Geometry } from "geojson";
 import { Entity, Column, Index } from "typeorm";
@@ -13,7 +13,7 @@ export class Property extends BaseEntity {
   @Column({ type: "text", nullable: true })
   description?: string;
 
-  @Column({ type: "bigint", transformer: new ColumnNumericTransformer() })
+  @Column({ type: "bigint", transformer: new MoneyTransformer() })
   price: number;
 
   @Column("varchar", { nullable: true })

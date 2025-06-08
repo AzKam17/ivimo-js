@@ -1,12 +1,13 @@
 import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
 import { PropertyAdTypeEnum } from "@/core/enums/enums";
+import { FileUtilityAdapter, FileUtilityPort } from "@/core/infrastructure/file";
 import { IGeometry } from "@/core/interface";
 import { Property } from "@/modules/property/infrastructure/entities";
 import { PropertyRepository } from "@/modules/property/infrastructure/repositories";
 
 export class CreatePropertyCommand extends BaseCommand {
   name: string;
-  price: string;
+  price: number;
   ad_type: PropertyAdTypeEnum;
   type: string;
   geolocation: IGeometry;
@@ -37,22 +38,31 @@ export class CreatePropertyCommandHandler extends BaseCommandHandler<CreatePrope
   async execute(command: CreatePropertyCommand): Promise<Property> {
     const repository = PropertyRepository.getInstance();
 
-    const e = Property.create({
+    const fileUtility: FileUtilityPort = new FileUtilityAdapter();
+
+    const mainImage = await fileUtility.uploadFile(command.main_image);
+
+    const images = command.images
+      ? await Promise.all(command.images.map((image) => fileUtility.uploadFile(image)))
+      : [];
+
+    const property = Property.create({
       name: command.name,
-      price: Number(command.price),
-      ad_type: command.ad_type,
+      price: command.price,
+      adType: command.ad_type,
       type: command.type,
-      // @ts-ignore
-      geolocation: command.geolocation,
       description: command.description,
       address: command.address,
-      main_image: command.main_image,
-      //images: command.images,
       extras: command.extras,
       createdBy: command.createdBy,
+      mainImage,
+      images,
+      // @ts-ignore
+      geolocation: command.geolocation,
     });
-    console.log(e);
 
-    return Promise.resolve(e);
+    const savedProperty = await repository.create(property);
+
+    return property;
   }
 }

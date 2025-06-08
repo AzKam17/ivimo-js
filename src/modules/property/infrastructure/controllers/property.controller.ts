@@ -8,12 +8,12 @@ import Elysia from "elysia";
 import { CommandMediator, cqrs } from "elysia-cqrs";
 
 export const PropertyController = new Elysia()
-  .use(OptionalAuthPlugin)
   .use(({ decorator }) => {
     return cqrs({
       commands: [[CreatePropertyCommand, new CreatePropertyCommandHandler()]],
     });
   })
+  .use(OptionalAuthPlugin)
   .post(
     routes.property.root,
     async ({ user, commandMediator, body }: {user: User | null, commandMediator: CommandMediator, body: any}) => {
