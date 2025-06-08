@@ -51,6 +51,10 @@ export const AuthController = new Elysia()
     {
       body: CreateUserDto,
       response: UserResponseSchema,
+      detail: {
+        summary: "Sign in - Create new User",
+        tags: ["Auth"],
+      },
     }
   )
   .post(
@@ -68,6 +72,11 @@ export const AuthController = new Elysia()
     },
     {
       body: LoginDto,
+      detail: {
+        summary: "Login in",
+        description: "Logs in user and send a otp (60s TTL) to his phone number.",
+        tags: ["Auth"],
+      },
     }
   )
   .post(
@@ -97,5 +106,10 @@ export const AuthController = new Elysia()
     {
       body: ConfirmOtpDto,
       response: UserTokenResponseSchema,
+      detail: {
+        summary: "Confirm OTP",
+        description: "Use this API to confirm received OTP and retrieve a jwt token.",
+        tags: ["Auth"],
+      },
     }
   );

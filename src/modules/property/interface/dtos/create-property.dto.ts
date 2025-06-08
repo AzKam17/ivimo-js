@@ -1,11 +1,13 @@
-import { PropertyAdType } from "@/core/enums/enums";
+import { PropertyAdTypeEnum } from "@/core/enums/enums";
+import { GeometrySchema } from "@/core/interface";
 import { t } from "elysia";
 
 export const CreatePropertyDto = t.Object({
   name: t.String(),
   price: t.String(),
-  ad_type: t.Enum(PropertyAdType),
+  ad_type: t.Enum(PropertyAdTypeEnum),
   type: t.String(),
+  geolocation: GeometrySchema,
   description: t.Optional(t.String()),
   address: t.Optional(t.String()),
   main_image: t.File({ type: "image/*" }),

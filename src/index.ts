@@ -11,6 +11,15 @@ const app = new Elysia()
   .use(
     swagger({
       documentation: {
+        info: {
+          title: "Ivimo Documentation",
+          version: "0.0.1",
+        },
+        tags: [
+          { name: "General", description: "General endpoints" },
+          { name: "Property", description: "Property endpoints" },
+          { name: "Auth", description: "Authentication endpoints" },
+        ],
         components: {
           securitySchemes: {
             jwt: {
@@ -26,7 +35,7 @@ const app = new Elysia()
   .use(ErrorPlugin)
   .use(AuthModule)
   .use(PropertyModule)
-  .get("/health", () => ({ status: "ok", runtime: "bun" }))
+  .get("/health", () => ({ status: "ok", runtime: "bun" }), { detail: { tags: ["General"] } })
   .listen(3000);
 
 console.log(`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`);

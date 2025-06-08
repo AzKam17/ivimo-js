@@ -3,7 +3,7 @@ import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import type { Geometry } from "geojson";
 import { Entity, Column, Index } from "typeorm";
 import type { Metadata } from "@/core/types";
-import { PropertyAdType } from "@/core/enums/enums";
+import { PropertyAdTypeEnum } from "@/core/enums/enums";
 
 @Entity({ name: "property" })
 export class Property extends BaseEntity {
@@ -20,7 +20,7 @@ export class Property extends BaseEntity {
   address?: string;
   
   @Column({ name: 'ad_type', type: 'varchar' })
-  adType: PropertyAdType;
+  adType: PropertyAdTypeEnum;
 
   @Column({ name: 'type', type: 'varchar', nullable: false})
   type: string;
@@ -39,7 +39,7 @@ export class Property extends BaseEntity {
   @Index({ spatial: true })
   geolocation?: Geometry;
 
-  @Column({ name: "created_by", type: "varchar" })
+  @Column({ name: "created_by", type: "varchar", nullable: true })
   createdBy: string;
 
   @Column({ name: "extras", type: "json" })

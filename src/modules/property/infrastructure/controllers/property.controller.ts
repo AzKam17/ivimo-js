@@ -15,6 +15,7 @@ export const PropertyController = new Elysia().use(OptionalAuthPlugin).post(
     detail: {
       summary: "Create a new property",
       consumes: ["multipart/form-data"],
+      tags: ["Property"],
     },
   }
 );
