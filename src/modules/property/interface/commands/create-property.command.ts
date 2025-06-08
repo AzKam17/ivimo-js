@@ -37,9 +37,7 @@ export class CreatePropertyCommand extends BaseCommand {
 export class CreatePropertyCommandHandler extends BaseCommandHandler<CreatePropertyCommand, Property> {
   async execute(command: CreatePropertyCommand): Promise<Property> {
     const repository = PropertyRepository.getInstance();
-
     const fileUtility: FileUtilityPort = new FileUtilityAdapter();
-
     const mainImage = await fileUtility.uploadFile(command.main_image);
 
     const images = command.images

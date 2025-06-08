@@ -101,7 +101,7 @@ export class BaseRepository<T extends BaseEntity> {
     return result.affected !== undefined && result.affected > 0;
   }
 
-  public async exists(where: Partial<T>): Promise<boolean> {
+  public async exists(where: Partial<T>, throwError: boolean = false): Promise<boolean> {
     const count = await this.repository.count({
       where: {
         ...where,
@@ -109,6 +109,10 @@ export class BaseRepository<T extends BaseEntity> {
         deletedAt: null,
       } as FindOptionsWhere<T>,
     });
+
+    if (throwError && count === 0) {
+      throw new Error("Entity not found");
+    }
     
     return count > 0;
   }
