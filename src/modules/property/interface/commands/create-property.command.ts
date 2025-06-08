@@ -53,6 +53,7 @@ export class CreatePropertyCommandHandler extends BaseCommandHandler<CreatePrope
       address: command.address,
       extras: command.extras,
       createdBy: command.createdBy,
+      ownedBy: command.createdBy,
       mainImage,
       images,
       // @ts-ignore

@@ -32,7 +32,8 @@ interface PropertyResponseProps {
   main_image?: string;
   images?: string[];
   geolocation?: any;
-  created_by: string;
+  created_by?: string;
+  owned_by?: string;
   created_at: string;
   updated_at: string;
 }
@@ -56,6 +57,7 @@ export class PropertyResponse {
       images: props.images ?? [],
       geolocation: props.geolocation ?? defaultGeolocation,
       created_by: props.createdBy,
+      owned_by: props.ownedBy,
       created_at: props.createdAt.toISOString(),
       updated_at: props.updatedAt.toISOString(),
     };

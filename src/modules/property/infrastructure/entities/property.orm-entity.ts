@@ -42,6 +42,9 @@ export class Property extends BaseEntity {
   @Column({ name: "created_by", type: "varchar", nullable: true })
   createdBy: string;
 
+  @Column({ name: "owned_by", type: "varchar", nullable: true })
+  ownedBy: string;
+
   @Column({ name: "extras", type: "json" })
   extras: Metadata;
 
