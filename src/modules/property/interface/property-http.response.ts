@@ -5,19 +5,20 @@ import { t } from "elysia";
 export const PropertyResponseSchema = t.Object({
   id: t.String(),
   name: t.String(),
-  description: t.String(),
+  description: t.Optional(t.String()),
   price: t.Number(),
-  address: t.String(),
+  address: t.Optional(t.String()),
   ad_type: t.Enum(PropertyAdTypeEnum),
   type: t.String(),
-  main_image: t.String(),
-  images: t.Array(t.String()),
-  geolocation: t.Object({
+  main_image: t.Optional(t.String()),
+  images: t.Optional(t.Array(t.String())),
+  geolocation: t.Optional(t.Object({
     type: t.String(),
     coordinates: t.Array(t.Number()),
-  }),
-  created_by: t.String(),
-  created_at: t.String(),
+  })),
+  created_by: t.Optional(t.String()),
+  owned_by: t.Optional(t.String()),
+  created_at: t.Optional(t.String()),
   updated_at: t.String(),
 });
 
