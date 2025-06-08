@@ -6,7 +6,7 @@ import * as path from "path";
 export class FileSystemAdapter implements FileUtilityPort {
   private readonly uploadDir: string;
   constructor() {
-    this.uploadDir = path.join(__dirname, "../../../uploads");
+    this.uploadDir = path.join(__dirname, "../../../../uploads");
   }
   async downloadFile(fileName: string): Promise<File> {
     const filePath = path.join(this.uploadDir, fileName);
