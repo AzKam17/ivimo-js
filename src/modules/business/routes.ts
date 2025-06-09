@@ -9,4 +9,7 @@ export const routes = {
   business_auth: {
     root: `${routePathAuth}`,
   },
+  agent: {
+    root: `${routePath}/:businessId/agent`,
+  }
 };
