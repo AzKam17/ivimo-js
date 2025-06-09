@@ -16,6 +16,7 @@ interface UserResponseProps {
   email: string;
   phone_number: string;
   role: string;
+  extras: any;
 }
 
 export class UserResponse {
@@ -26,7 +27,8 @@ export class UserResponse {
       last_name: props.last_name,
       email: props.email,
       phone_number: props.phone_number, 
-      role: props.role
+      role: props.role,
+      extras: props.extras
     }
   }
 }

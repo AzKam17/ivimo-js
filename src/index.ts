@@ -5,6 +5,7 @@ import swagger from "@elysiajs/swagger";
 import { ErrorPlugin } from "@/core/base/errors";
 import { PropertyModule } from "@/modules/property";
 import { AssetModule } from "@/modules/assets";
+import { BusinessModule } from "@/modules/business";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
@@ -19,6 +20,7 @@ const app = new Elysia()
         tags: [
           { name: "General", description: "General endpoints" },
           { name: "Property", description: "Property endpoints" },
+          { name: "Business", description: "Business endpoints" },
           { name: "Auth", description: "Authentication endpoints" },
           { name: "Assets", description: "Assets endpoints" },
         ],
@@ -38,6 +40,7 @@ const app = new Elysia()
   .use(AssetModule)
   .use(AuthModule)
   .use(PropertyModule)
+  .use(BusinessModule)
   .get("/health", () => ({ status: "ok", runtime: "bun" }), { detail: { tags: ["General"] } })
   .listen(3000);
 

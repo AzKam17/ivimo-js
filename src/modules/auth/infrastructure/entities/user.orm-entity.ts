@@ -1,5 +1,6 @@
 import { UserRoleEnum } from "@/core/enums/enums";
 import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
+import type { Metadata } from "@/core/types";
 import { Entity, Column } from "typeorm";
 
 @Entity()
@@ -21,6 +22,9 @@ export class User extends BaseEntity {
   
   @Column('varchar')
   password: string;
+  
+  @Column({ name: "extras", type: "json", default: {} })
+  extras: Metadata;
 
   static create(props: Partial<User>): User {
     const user = new User();
