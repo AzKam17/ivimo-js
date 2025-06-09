@@ -55,7 +55,6 @@ export const PropertyController = new Elysia()
         });
     },
     {
-      //response: PropertyResponseSchema,
       detail: {
         summary: "Get a property",
         tags: ["Property"],
