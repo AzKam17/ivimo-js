@@ -31,6 +31,9 @@ export class Property extends BaseEntity {
   @Column({ name: "images", type: "json", nullable: true })
   images?: string[];
 
+  @Column({ type: "int", default: 0 })
+  views: number;
+
   @Column("geometry", {
     spatialFeatureType: "Point",
     srid: 4326,
@@ -49,8 +52,9 @@ export class Property extends BaseEntity {
   extras: Metadata;
 
   static create(props: Partial<Property>): Property {
-    const user = new Property();
-    Object.assign(user, props);
-    return user;
+    const property = new Property();
+    Object.assign(property, props);
+    property.views = 0;
+    return property;
   }
 }

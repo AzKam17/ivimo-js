@@ -10,6 +10,7 @@ export const PropertyResponseSchema = t.Object({
   address: t.Optional(t.String()),
   ad_type: t.String(),
   type: t.String(),
+  views: t.Number(),
   main_image: t.Optional(t.String()),
   images: t.Optional(t.Array(t.String())),
   geolocation: t.Optional(t.Object({
@@ -30,6 +31,7 @@ interface PropertyResponseProps {
   address?: string;
   ad_type: PropertyAdTypeEnum;
   type: string;
+  views: number;
   main_image?: string;
   images?: string[];
   geolocation?: any;
@@ -54,6 +56,7 @@ export class PropertyResponse {
       address: props.address ?? "",
       ad_type: props.adType,
       type: props.type,
+      views: props.views,
       main_image: props.mainImage ?? "",
       images: props.images ?? [],
       geolocation: props.geolocation ?? defaultGeolocation,
