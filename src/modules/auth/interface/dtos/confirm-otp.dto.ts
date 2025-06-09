@@ -1,6 +1,6 @@
 import { t } from "elysia";
 
 export const ConfirmOtpDto = t.Object({
-    email: t.String({ format: "email" }),
-    code: t.String({}),
-  });
+  phone_number: t.String({ minLength: 10, maxLength: 10 }),
+  code: t.String({}),
+});

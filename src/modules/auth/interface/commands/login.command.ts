@@ -4,12 +4,12 @@ import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.
 import { RedisClient } from "bun";
 
 export class LoginCommand extends BaseCommand {
-  email: string;
+  phone_number: string;
   password: string;
 
   constructor(props: CommandProps<LoginCommand>) {
     super(props);
-    this.email = props.email;
+    this.phone_number = props.phone_number;
     this.password = props.password;
   }
 }
@@ -26,21 +26,21 @@ export class LoginCommandHandler extends BaseCommandHandler<LoginCommand, boolea
     const repository = UserRepository.getInstance();
 
     const user = await repository.findOneBy({
-        email:command.email
+      phone_number: command.phone_number,
     });
 
-    if(user) {
-        const isPasswordValid = Bun.password.verify(command.password, user.password);
-        if(!isPasswordValid) {
-            return Promise.resolve(false);
-        }
+    if (user) {
+      const isPasswordValid = Bun.password.verify(command.password, user.password);
+      if (!isPasswordValid) {
+        return Promise.resolve(false);
+      }
 
-        const otp = randomOTP();
-        this.redis.set(user.id, otp);
-        this.redis.expire(user.id, 60);
-        return Promise.resolve(true);
+      const otp = randomOTP();
+      this.redis.set(user.id, otp);
+      this.redis.expire(user.id, 60);
+      return Promise.resolve(true);
     }
-    
+
     return Promise.resolve(false);
   }
 }

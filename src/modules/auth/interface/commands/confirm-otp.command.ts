@@ -3,12 +3,12 @@ import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.
 import { RedisClient } from "bun";
 
 export class ConfirmOtpCommand extends BaseCommand {
-  email: string;
+  phone_number: string;
   code: string;
 
   constructor(props: CommandProps<ConfirmOtpCommand>) {
     super(props);
-    this.email = props.email;
+    this.phone_number = props.phone_number;
     this.code = props.code;
   }
 }
@@ -25,7 +25,7 @@ export class ConfirmOtpCommandHandler extends BaseCommandHandler<ConfirmOtpComma
     const repository = UserRepository.getInstance();
 
     const user = await repository.findOneBy({
-        email:command.email
+      phone_number: command.phone_number,
     });
 
     if (user) {
