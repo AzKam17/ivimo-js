@@ -5,7 +5,12 @@ import { Property } from "@/modules/property/infrastructure/entities";
 import { CreatePropertyCommand, CreatePropertyCommandHandler } from "@/modules/property/interface/commands";
 import { CreatePropertyDto } from "@/modules/property/interface/dtos";
 import { PropertyResponse, PropertyResponseSchema } from "@/modules/property/interface/property-http.response";
-import { GetPropertyQuery, GetPropertyQueryHandler } from "@/modules/property/interface/queries";
+import {
+  GetPropertyQuery,
+  GetPropertyQueryHandler,
+  GetRecommendedPropertyQuery,
+  GetRecommendedPropertyQueryHandler,
+} from "@/modules/property/interface/queries";
 import { routes } from "@/modules/property/routes";
 import Elysia from "elysia";
 import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
@@ -14,7 +19,10 @@ export const PropertyController = new Elysia()
   .use(({ decorator }) => {
     return cqrs({
       commands: [[CreatePropertyCommand, new CreatePropertyCommandHandler()]],
-      queries: [[GetPropertyQuery, new GetPropertyQueryHandler()]],
+      queries: [
+        [GetPropertyQuery, new GetPropertyQueryHandler()],
+        [GetRecommendedPropertyQuery, new GetRecommendedPropertyQueryHandler()],
+      ],
     });
   })
   .use(OptionalAuthPlugin)
@@ -47,7 +55,7 @@ export const PropertyController = new Elysia()
 
   .get(
     routes.property.detail,
-    async ({ params: {id}, queryMediator }: { params: any; queryMediator: QueryMediator }) => {
+    async ({ params: { id }, queryMediator }: { params: any; queryMediator: QueryMediator }) => {
       const property = await queryMediator.send(new GetPropertyQuery({ id }));
       return () =>
         new PropertyResponse({
@@ -57,6 +65,21 @@ export const PropertyController = new Elysia()
     {
       detail: {
         summary: "Get a property",
+        tags: ["Property"],
+      },
+    }
+  )
+  .get(
+    routes.property.recommendation,
+    async ({ params: { id }, queryMediator }: { params: any; queryMediator: QueryMediator }) => {
+      const result: Property[] = await queryMediator.send(new GetRecommendedPropertyQuery({ id }));
+
+      return result.map((e) => new PropertyResponse({ ...e }));
+    },
+    {
+      detail: {
+        summary: "Get recommendation for a property",
+        description: "Provide an array of recommended properties for a given property",
         tags: ["Property"],
       },
     }
