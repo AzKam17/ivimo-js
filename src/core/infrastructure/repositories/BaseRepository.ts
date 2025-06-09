@@ -116,4 +116,8 @@ export class BaseRepository<T extends BaseEntity> {
     
     return count > 0;
   }
+
+  public async findAllEvenDeleted(): Promise<T[]> {
+    return this.repository.find();
+  }
 }
