@@ -10,7 +10,7 @@ export class FileSystemAdapter implements FileUtilityPort {
   }
   async downloadFile(fileName: string): Promise<File> {
     const filePath = path.join(this.uploadDir, fileName);
-
+    console.log(filePath)
     try {
       await fs.access(filePath);
       const buffer = await fs.readFile(filePath);
@@ -41,7 +41,7 @@ export class FileSystemAdapter implements FileUtilityPort {
 
       await fs.writeFile(filePath, buffer);
 
-      return fileId;
+      return fileName;
     } catch (error) {
       throw new Error(`Failed to upload file: ${error instanceof Error ? error.message : "Unknown error"}`);
     }

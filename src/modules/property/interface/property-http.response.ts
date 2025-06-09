@@ -8,7 +8,7 @@ export const PropertyResponseSchema = t.Object({
   description: t.Optional(t.String()),
   price: t.Number(),
   address: t.Optional(t.String()),
-  ad_type: t.Enum(PropertyAdTypeEnum),
+  ad_type: t.String(),
   type: t.String(),
   main_image: t.Optional(t.String()),
   images: t.Optional(t.Array(t.String())),

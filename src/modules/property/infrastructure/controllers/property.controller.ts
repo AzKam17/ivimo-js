@@ -47,8 +47,8 @@ export const PropertyController = new Elysia()
 
   .get(
     routes.property.detail,
-    async ({ params, queryMediator }: { params: any; queryMediator: QueryMediator }) => {
-      const property = await queryMediator.send(new GetPropertyQuery({ id: params.id }));
+    async ({ params: {id}, queryMediator }: { params: any; queryMediator: QueryMediator }) => {
+      const property = await queryMediator.send(new GetPropertyQuery({ id }));
       return () =>
         new PropertyResponse({
           ...(property as Property),
