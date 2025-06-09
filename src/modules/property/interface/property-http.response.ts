@@ -39,6 +39,7 @@ interface PropertyResponseProps {
   owned_by?: string;
   created_at: string;
   updated_at: string;
+  is_bookmarked?: boolean;
 }
 
 export class PropertyResponse {
