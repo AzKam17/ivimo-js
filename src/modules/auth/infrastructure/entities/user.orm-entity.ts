@@ -1,4 +1,4 @@
-import { UserRoleEnum } from "@/core/enums/enums";
+import { UserRoleEnum, UserRoleEnumWithoutAdmin } from "@/core/enums/enums";
 import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import type { Metadata } from "@/core/types";
 import { Entity, Column } from "typeorm";
@@ -15,7 +15,7 @@ export class User extends BaseEntity {
   email: string;
 
   @Column('varchar', {name: 'role', default: UserRoleEnum.USER})
-  role: UserRoleEnum;
+  role: UserRoleEnum | UserRoleEnumWithoutAdmin;
   
   @Column('varchar', { length: 10 })
   phone_number: string;
@@ -28,8 +28,8 @@ export class User extends BaseEntity {
 
   static create(props: Partial<User>): User {
     const user = new User();
-    Object.assign(user, props);
     user.role = UserRoleEnum.USER;
+    Object.assign(user, props);
     return user;
   }
 }

@@ -2,6 +2,8 @@ import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/class
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { BaseError } from "@/core/base/errors";
+import { UserRoleEnumWithoutAdmin } from "@/core/enums/enums";
+import { Guard } from "@/core/utils";
 
 export class CreateUserCommand extends BaseCommand {
   first_name: string;
@@ -9,6 +11,7 @@ export class CreateUserCommand extends BaseCommand {
   email: string;
   phone_number: string;
   password: string;
+  role?: UserRoleEnumWithoutAdmin;
 
   constructor(props: CommandProps<CreateUserCommand>) {
     super(props);
@@ -17,6 +20,7 @@ export class CreateUserCommand extends BaseCommand {
     this.email = props.email;
     this.phone_number = props.phone_number;
     this.password = props.password;
+    this.role = props.role;
   }
 }
 
@@ -37,6 +41,8 @@ export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCo
       });
     }
 
+    const role = Guard.isEmpty(query.role) ? {} : {role: query.role};
+    
     const user = await repository.save(
       User.create({
         first_name: query.first_name,
@@ -44,6 +50,7 @@ export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCo
         email: query.email,
         phone_number: query.phone_number,
         password: await Bun.password.hash(query.password),
+        ...role
       })
     );
 
