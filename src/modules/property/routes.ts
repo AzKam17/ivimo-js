@@ -2,6 +2,6 @@ export const routes = {
     property: {
         root: `/`,
         detail: `/:id`,
-        recommendation: `/:id`,
+        recommendation: `/recommended/:id`,
     },
   }

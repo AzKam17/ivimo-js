@@ -1,8 +1,15 @@
+import { Guard } from "@/core/utils";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
 import { OptionalAuthPlugin } from "@/modules/auth/plugins/optionnal-auth.plugin";
+import { RedisPlugin } from "@/modules/config";
 import { Property } from "@/modules/property/infrastructure/entities";
-import { CreatePropertyCommand, CreatePropertyCommandHandler } from "@/modules/property/interface/commands";
+import {
+  CreatePropertyCommand,
+  CreatePropertyCommandHandler,
+  IncreasePropertyViewsCommand,
+  IncreasePropertyViewsCommandHandler,
+} from "@/modules/property/interface/commands";
 import { CreatePropertyDto } from "@/modules/property/interface/dtos";
 import { PropertyResponse, PropertyResponseSchema } from "@/modules/property/interface/property-http.response";
 import {
@@ -14,11 +21,17 @@ import {
 import { routes } from "@/modules/property/routes";
 import Elysia from "elysia";
 import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
+import { ip } from "elysia-ip";
 
 export const PropertyController = new Elysia()
+  .use(RedisPlugin)
   .use(({ decorator }) => {
+    const redis = decorator.redis;
     return cqrs({
-      commands: [[CreatePropertyCommand, new CreatePropertyCommandHandler()]],
+      commands: [
+        [CreatePropertyCommand, new CreatePropertyCommandHandler()],
+        [IncreasePropertyViewsCommand, new IncreasePropertyViewsCommandHandler(redis)],
+      ],
       queries: [
         [GetPropertyQuery, new GetPropertyQueryHandler()],
         [GetRecommendedPropertyQuery, new GetRecommendedPropertyQueryHandler()],
@@ -53,10 +66,26 @@ export const PropertyController = new Elysia()
     }
   )
 
+  .use(ip())
   .get(
     routes.property.detail,
-    async ({ params: { id }, queryMediator }: { params: any; queryMediator: QueryMediator }) => {
+    async ({
+      params: { id },
+      ip,
+      queryMediator,
+      commandMediator,
+    }: {
+      params: any;
+      ip: any;
+      queryMediator: QueryMediator;
+      commandMediator: CommandMediator;
+    }) => {
       const property = await queryMediator.send(new GetPropertyQuery({ id }));
+
+      if (!Guard.isEmpty(ip)) {
+        commandMediator.send(new IncreasePropertyViewsCommand({ id, ip }));
+      }
+
       return () =>
         new PropertyResponse({
           ...(property as Property),

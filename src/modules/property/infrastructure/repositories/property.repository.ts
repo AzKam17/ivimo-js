@@ -15,6 +15,28 @@ export class PropertyRepository extends BaseRepository<Property> {
     return PropertyRepository.instance;
   }
 
+  async increaseViews(id: string): Promise<boolean> {
+    return await this.repository.manager.transaction(async transactionalEntityManager => {
+      // Find with pessimistic write lock
+      const property = await transactionalEntityManager.findOne(this.repository.target, {
+        where: { id },
+        lock: { mode: 'pessimistic_write' }
+      });
+  
+      if (!property) {
+        return false;
+      }
+  
+      // Update the views count
+      await transactionalEntityManager.update(this.repository.target, 
+        { id }, 
+        { views: property.views + 1 }
+      );
+  
+      return true;
+    });
+  }
+
   /**
    * Get recommended properties within a specific radius (in meters)
    */
