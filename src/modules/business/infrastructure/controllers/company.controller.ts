@@ -6,22 +6,32 @@ import {
   CreateCompanyCommandHandler,
 } from "@/modules/business/interface/commands/create-company.command";
 import { CreateCompanyDto } from "@/modules/business/interface/dtos";
-import { CompanyResponse } from "@/modules/business/interface/responses";
+import { GetCompanyQuery, GetCompanyQueryHandler } from "@/modules/business/interface/queries";
+import { CompanyResponse, CompanyResponseSchema } from "@/modules/business/interface/responses";
 import { routes } from "@/modules/business/routes";
 import Elysia from "elysia";
-import { CommandMediator, cqrs } from "elysia-cqrs";
+import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
 
 export const CompanyController = new Elysia()
   .use(({ decorator }) => {
     return cqrs({
       commands: [[CreateCompanyCommand, new CreateCompanyCommandHandler()]],
+      queries: [[GetCompanyQuery, new GetCompanyQueryHandler()]]
     });
+  })
+  .get(routes.business.detail, async({params: {id}, queryMediator}: {queryMediator: QueryMediator, params: any}) => {
+    const result: Company = await queryMediator.send(new GetCompanyQuery(id));
+    return () => new CompanyResponse(result);
+  }, {
+    detail: {
+      summary: "Get a company details",
+      tags: ["Business"],
+    },
   })
   .use(AuthRoutesPlugin)
   .post(
     routes.business_auth.root,
     async ({ body, user, commandMediator }: { body: any; user: User; commandMediator: CommandMediator }) => {
-      console.log(user);
       const result: Company = await commandMediator.send(
         new CreateCompanyCommand({
           ...body,
