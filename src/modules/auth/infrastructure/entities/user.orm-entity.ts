@@ -1,3 +1,4 @@
+import { UserRoleEnum } from "@/core/enums/enums";
 import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import { Entity, Column } from "typeorm";
 
@@ -11,6 +12,9 @@ export class User extends BaseEntity {
   
   @Column('varchar', { unique: true })
   email: string;
+
+  @Column('varchar', {name: 'role', default: UserRoleEnum.USER})
+  role: UserRoleEnum;
   
   @Column('varchar', { length: 10 })
   phone_number: string;
@@ -21,6 +25,7 @@ export class User extends BaseEntity {
   static create(props: Partial<User>): User {
     const user = new User();
     Object.assign(user, props);
+    user.role = UserRoleEnum.USER;
     return user;
   }
 }

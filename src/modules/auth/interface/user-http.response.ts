@@ -15,12 +15,18 @@ interface UserResponseProps {
   last_name: string;
   email: string;
   phone_number: string;
+  role: string;
 }
 
 export class UserResponse {
   constructor(props: UserResponseProps) {
     return {
-      ...props,
+      id: props.id,
+      first_name: props.first_name,
+      last_name: props.last_name,
+      email: props.email,
+      phone_number: props.phone_number, 
+      role: props.role
     }
   }
 }

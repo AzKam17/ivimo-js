@@ -11,7 +11,7 @@ import {
   GenerateAuthTokenCommand,
   GenerateAuthTokenCommandHandler,
 } from "@/modules/auth/interface/commands";
-import { ConfirmOtpDto, CreateUserDto, LoginDto } from "@/modules/auth/interface/dtos";
+import { ConfirmOtpDto, CreateUserDto, EditUserDto, LoginDto } from "@/modules/auth/interface/dtos";
 import { routes } from "@/modules/auth/routes";
 import { User } from "@/modules/auth/infrastructure/entities";
 import {
@@ -21,7 +21,8 @@ import {
   UserTokenResponseSchema,
 } from "@/modules/auth/interface/user-http.response";
 import { BaseError } from "@/core/base/errors";
-import { AuthJWT } from "@/modules/auth/plugins";
+import { AuthJWT, AuthRoutesPlugin } from "@/modules/auth/plugins";
+import { EditUserCommand, EditUserCommandHandler } from "@/modules/auth/interface/commands/edit-user.command";
 
 export const AuthController = new Elysia()
   .use(RedisPlugin)
@@ -32,6 +33,7 @@ export const AuthController = new Elysia()
     return cqrs({
       commands: [
         [CreateUserCommand, new CreateUserCommandHandler()],
+        [EditUserCommand, new EditUserCommandHandler()],
         [LoginCommand, new LoginCommandHandler(redis)],
         [ConfirmOtpCommand, new ConfirmOtpCommandHandler(redis)],
         [GenerateAuthTokenCommand, new GenerateAuthTokenCommandHandler(jwt)],
@@ -109,6 +111,28 @@ export const AuthController = new Elysia()
       detail: {
         summary: "Confirm OTP",
         description: "Use this API to confirm received OTP and retrieve a jwt token.",
+        tags: ["Auth"],
+      },
+    }
+  )
+  .use(AuthRoutesPlugin)
+  .put(
+    routes.root,
+    async ({ user, body, commandMediator }: { user: User; body: any; commandMediator: CommandMediator }) => {
+      const result: User = await commandMediator.send(
+        new EditUserCommand({
+          ...body,
+          id: user.id,
+        })
+      );
+
+      return () => new UserResponse({...result, id: user.id});
+    },
+    {
+      body: EditUserDto,
+      detail: {
+        summary: "Edit User",
+        description: "Use this API to edit your account.",
         tags: ["Auth"],
       },
     }

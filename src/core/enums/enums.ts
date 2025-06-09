@@ -3,6 +3,19 @@ export enum  PropertyAdTypeEnum {
   RENT = "rent",
 }
 
+export enum UserRoleEnum {
+  ADMIN = "admin",
+  USER = "user",
+  PARTNER = "partner",
+  AGENT = "agent"
+}
+
+export enum UserRoleEnumWithoutAdmin {
+  USER = UserRoleEnum.USER,
+  PARTNER = UserRoleEnum.PARTNER,
+  AGENT = UserRoleEnum.AGENT
+}
+
 // export namespace PropertyAdTypeEnum {
 //   export function from(value: string): PropertyAdTypeEnum {
 //     switch (value.toLowerCase()) {
