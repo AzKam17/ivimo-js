@@ -38,7 +38,7 @@ export const PropertyController = new Elysia()
       ],
     });
   })
-  .use(AuthRoutesPlugin)
+  .use(OptionalAuthPlugin)
   .post(
     routes.property_auth.root,
     async ({ user, commandMediator, body }: { user: User | null; commandMediator: CommandMediator; body: any }) => {

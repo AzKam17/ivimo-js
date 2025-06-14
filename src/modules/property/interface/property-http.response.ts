@@ -40,6 +40,7 @@ interface PropertyResponseProps {
   created_at: string;
   updated_at: string;
   is_bookmarked?: boolean;
+  extras: any
 }
 
 export class PropertyResponse {
@@ -63,6 +64,10 @@ export class PropertyResponse {
       geolocation: props.geolocation ?? defaultGeolocation,
       created_by: props.createdBy,
       owned_by: props.ownedBy,
+      extras: {
+        ...props.extras,
+        bookmarks: null
+      },
       created_at: props.createdAt.toISOString(),
       updated_at: props.updatedAt.toISOString(),
     };
