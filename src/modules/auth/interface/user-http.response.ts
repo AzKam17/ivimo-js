@@ -1,3 +1,4 @@
+import { User } from "@/modules/auth/infrastructure/entities";
 import { t } from "elysia";
 import { Timestamp } from "typeorm";
 
@@ -40,12 +41,14 @@ export const UserTokenResponseSchema = t.Object({
 
 interface UserTokenResponseProps {
   token: string;
+  user: User
 }
 
 export class UserTokenResponse {
   constructor(props: UserTokenResponseProps) {
     return {
      ...props,
+     user: new UserResponse(props.user),
      timestamp: (new Date()).getTime(),
     }
   }

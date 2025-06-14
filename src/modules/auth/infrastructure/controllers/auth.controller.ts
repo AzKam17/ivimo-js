@@ -10,6 +10,7 @@ import {
   ConfirmOtpCommandHandler,
   GenerateAuthTokenCommand,
   GenerateAuthTokenCommandHandler,
+  GenerateAuthTokenCommandResult,
 } from "@/modules/auth/interface/commands";
 import { ConfirmOtpDto, CreateUserDto, EditUserDto, LoginDto } from "@/modules/auth/interface/dtos";
 import { routes } from "@/modules/auth/routes";
@@ -46,7 +47,7 @@ export const AuthController = new Elysia()
       const result: User = await commandMediator.send(
         new CreateUserCommand({
           ...body,
-          role: undefined
+          role: undefined,
         })
       );
       return new UserResponse(result);
@@ -98,17 +99,17 @@ export const AuthController = new Elysia()
         });
       }
 
-      const token = await commandMediator.send(
+      const { token, user } : GenerateAuthTokenCommandResult = await commandMediator.send(
         new GenerateAuthTokenCommand({
           ...body,
         })
       );
 
-      return new UserTokenResponse({ token });
+      return new UserTokenResponse({ token, user });
     },
     {
       body: ConfirmOtpDto,
-      response: UserTokenResponseSchema,
+      // response: UserTokenResponseSchema,
       detail: {
         summary: "Confirm OTP",
         description: "Use this API to confirm received OTP and retrieve a jwt token.",
@@ -127,7 +128,7 @@ export const AuthController = new Elysia()
         })
       );
 
-      return () => new UserResponse({...result, id: user.id});
+      return () => new UserResponse({ ...result, id: user.id });
     },
     {
       body: EditUserDto,
