@@ -13,10 +13,13 @@ export class Appointment extends BaseEntity {
   @Column("varchar", { name: "is_all_day", nullable: true })
   isAllDay: boolean;
 
+  @Column("varchar", { name: "is_done", default: false })
+  is_done: boolean;
+
   @Column("varchar", { name: "property_id" })
   propertyId: string;
 
-  @Column("varchar", { name: "agent_id" })
+  @Column("varchar", { name: "agent_id"})
   agentId: string;
 
   @Column("varchar", { name: "client_id", nullable: true })

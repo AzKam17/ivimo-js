@@ -23,6 +23,7 @@ const app = new Elysia()
           { name: "Business", description: "Business endpoints" },
           { name: "Auth", description: "Authentication endpoints" },
           { name: "Assets", description: "Assets endpoints" },
+          { name: "Appointment", description: "Appointment endpoints" },
         ],
         components: {
           securitySchemes: {

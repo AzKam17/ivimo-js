@@ -11,5 +11,8 @@ export const routes = {
   },
   agent: {
     root: `${routePath}/:businessId/agent`,
+  },
+  appointment: {
+    root: `api/v1/appointment`,
   }
 };

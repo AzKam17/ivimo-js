@@ -1,6 +1,8 @@
 import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
+import { PropertyRepository } from "@/modules/property/infrastructure/repositories";
 import { BookMarkPropertyCommand, BookMarkPropertyCommandHandler } from "@/modules/property/interface/commands";
+import { PropertyResponse } from "@/modules/property/interface/property-http.response";
 import { routes } from "@/modules/property/routes";
 import Elysia from "elysia";
 import { CommandMediator, cqrs } from "elysia-cqrs";
@@ -44,8 +46,12 @@ export const AuthPropertyController = new Elysia()
   )
   .get(
     routes.property_auth.root,
-    ({ user }) => {
-      return user;
+    async ({ user }) => {
+      const repository = PropertyRepository.getInstance();
+      const properties = await repository.findBy({
+        ownedBy: user.id
+      })
+      return properties.map(e => new PropertyResponse(e));
     },
     {
       detail: {

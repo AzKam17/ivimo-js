@@ -38,9 +38,9 @@ export const PropertyController = new Elysia()
       ],
     });
   })
-  .use(OptionalAuthPlugin)
+  .use(AuthRoutesPlugin)
   .post(
-    routes.property.root,
+    routes.property_auth.root,
     async ({ user, commandMediator, body }: { user: User | null; commandMediator: CommandMediator; body: any }) => {
       const property: Property = await commandMediator.send(
         new CreatePropertyCommand({
@@ -56,7 +56,7 @@ export const PropertyController = new Elysia()
     },
     {
       body: CreatePropertyDto,
-      response: PropertyResponseSchema,
+      //response: PropertyResponseSchema,
       type: "formdata",
       detail: {
         summary: "Create a new property",
