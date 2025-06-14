@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "dc009f92-913f-48e7-a6af-8d1e06b40caa",
+		"name": "Ivimo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42404611",
+		"_collection_link": "https://belou0.postman.co/workspace/Belou~dad65676-e9b6-4934-a846-adce8605d464/collection/42404611-dc009f92-913f-48e7-a6af-8d1e06b40caa?action=share&source=collection_link&creator=42404611"
+	},
+	"item": [
+		{
+			"name": "Create property",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Aziz",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "5000000.12",
+							"type": "text"
+						},
+						{
+							"key": "ad_type",
+							"value": "rent",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "qweqwe",
+							"type": "text"
+						},
+						{
+							"key": "geolocation",
+							"value": "{\"type\":\"Point\",\"coordinates\":[1, 2]}",
+							"type": "text"
+						},
+						{
+							"key": "main_image",
+							"type": "file",
+							"src": "/Users/azk/Downloads/WhatsApp Image 2025-05-14 at 10.39.30 (8).jpeg"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": [
+								"/Users/azk/Downloads/WhatsApp Image 2025-05-14 at 10.39.30 (1).jpeg",
+								"/Users/azk/Downloads/WhatsApp Image 2025-05-14 at 10.39.30 (2).jpeg",
+								"/Users/azk/Downloads/WhatsApp Image 2025-05-14 at 10.39.30 (3).jpeg",
+								"/Users/azk/Downloads/WhatsApp Image 2025-05-14 at 10.39.30 (4).jpeg",
+								"/Users/azk/Downloads/WhatsApp Image 2025-05-14 at 10.39.30 (5).jpeg"
+							],
+							"disabled": true
+						},
+						{
+							"key": "extras",
+							"value": "{\"wefwe\":\"Wfwefw\"}",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Hello",
+							"type": "text"
+						},
+						{
+							"key": "address",
+							"value": "Paris",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/auth/property",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"property"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
