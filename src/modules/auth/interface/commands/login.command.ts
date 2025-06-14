@@ -30,7 +30,7 @@ export class LoginCommandHandler extends BaseCommandHandler<LoginCommand, boolea
     });
 
     if (user) {
-      const isPasswordValid = Bun.password.verify(command.password, user.password);
+      const isPasswordValid = await Bun.password.verify(command.password, user.password);
       if (!isPasswordValid) {
         return Promise.resolve(false);
       }
