@@ -41,7 +41,7 @@ export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCo
       });
     }
 
-    const role = Guard.isEmpty(query.role) ? {} : {role: query.role};
+    const role = Guard.isEmpty(query.role) ? {role: UserRoleEnumWithoutAdmin.USER} : {role: query.role};
     
     const user = await repository.save(
       User.create({
