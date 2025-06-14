@@ -11,10 +11,10 @@ export interface GenerateAuthTokenCommandResult {
 }
 
 export class GenerateAuthTokenCommand extends BaseCommand {
-  email: string;
+  phone_number: string;
   constructor(props: CommandProps<GenerateAuthTokenCommand>) {
     super(props);
-    this.email = props.email;
+    this.phone_number = props.phone_number;
   }
 }
 
@@ -32,7 +32,7 @@ export class GenerateAuthTokenCommandHandler extends BaseCommandHandler<
     const repository = UserRepository.getInstance();
 
     const user = await repository.findOneBy({
-      email: command.email,
+      phone_number: command.phone_number,
     });
 
     if (!user) {
