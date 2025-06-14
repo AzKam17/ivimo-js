@@ -1,4 +1,28 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - uploads_data:/app/uploads
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DB_HOST=postgis
+      - DB_PORT=5432
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - FILE_DRIVER=${FILE_DRIVER}
+    depends_on:
+      - postgis
+      - redis
+
   postgis:
     image: postgis/postgis:latest
     mem_limit: 216M
@@ -11,7 +35,6 @@ services:
       - '225immo_backend:/var/lib/postgresql/data:rw'
     ports:
       - '${DB_PORT}:5432'
-
   
   redis:
     image: redis:latest
@@ -20,3 +43,4 @@ services:
 
 volumes:
   225immo_backend:
+  uploads_data:
