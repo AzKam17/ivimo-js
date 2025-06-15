@@ -4,10 +4,10 @@ import { Column, Entity } from "typeorm";
 
 @Entity({ name: "appointment" })
 export class Appointment extends BaseEntity {
-  @Column({ name: "start_date" })
+  @Column({ name: "start_date", type: "timestamp" })
   startDate: Date;
 
-  @Column({ name: "end_date" })
+  @Column({ name: "end_date", type: "timestamp" })
   endDate: Date;
 
   @Column("varchar", { name: "is_all_day", nullable: true })

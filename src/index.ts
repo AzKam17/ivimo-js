@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Elysia } from "elysia";
 import { AppDataSource, LoggerPlugin } from "./modules/config";
 import { AuthModule } from "./modules/auth";
