@@ -1,4 +1,5 @@
 import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
+import { BaseError } from "@/core/base/errors";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { PropertyRepository } from "@/modules/property/infrastructure/repositories";
 
@@ -20,18 +21,26 @@ export class BookMarkPropertyCommandHandler extends BaseCommandHandler<BookMarkP
       const propertyRepository = PropertyRepository.getInstance();
       const userRepository = UserRepository.getInstance();
 
-      await userRepository.exists({ id: userId }, true);
-
-      const property = await propertyRepository.findById(propertyId);
-      const bookmarks: Array<string> = (property?.extras?.bookmarks as Array<string>) ?? [];
-
-      if (bookmarks.includes(userId)) {
-        bookmarks.splice(bookmarks.indexOf(userId), 1);
-      } else {
-        bookmarks.push(userId);
+      const user = await userRepository.findOneBy({ id: userId });
+      if (!user) {
+        throw new BaseError({
+          statusCode: 500,
+          message: "Unauthorized",
+        });
       }
 
-      await propertyRepository.update(propertyId, { extras: { bookmarks } });
+      await propertyRepository.exists({ id: propertyId }, true);
+
+      const bookmarks: Array<string> = (user?.extras?.bookmarks as Array<string>) ?? [];
+      if (bookmarks.includes(userId)) {
+        bookmarks.splice(bookmarks.indexOf(propertyId), 1);
+      } else {
+        bookmarks.push(propertyId);
+      }
+
+      await userRepository.update(userId, { extras: { bookmarks } });
+      await propertyRepository.update(propertyId, { extras: { bookmarks_count: bookmarks.length } });
+
       return true;
     } catch (error) {
       return false;

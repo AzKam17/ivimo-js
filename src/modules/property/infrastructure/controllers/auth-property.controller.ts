@@ -46,12 +46,12 @@ export const AuthPropertyController = new Elysia()
   )
   .get(
     routes.property_auth.root,
-    async ({ user }) => {
+    async ({ user }: { user: User }) => {
       const repository = PropertyRepository.getInstance();
       const properties = await repository.findBy({
-        ownedBy: user.id
-      })
-      return properties.map(e => new PropertyResponse(e));
+        ownedBy: user.id,
+      });
+      return properties.map((e) => new PropertyResponse(e));
     },
     {
       detail: {
