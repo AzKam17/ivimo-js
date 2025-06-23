@@ -99,7 +99,7 @@ export const AuthController = new Elysia()
         });
       }
 
-      const { token, user } : GenerateAuthTokenCommandResult = await commandMediator.send(
+      const { token, user }: GenerateAuthTokenCommandResult = await commandMediator.send(
         new GenerateAuthTokenCommand({
           ...body,
         })
@@ -138,4 +138,14 @@ export const AuthController = new Elysia()
         tags: ["Auth"],
       },
     }
-  );
+  )
+  .use(AuthRoutesPlugin)
+  .get(routes.refresh, async ({ user }: { user: User }) => {
+    return () => new UserResponse({ ...user });
+  }, {
+    detail: {
+      summary: "Refresh User",
+      description: "Use this API to refresh your account.",
+      tags: ["Auth"],
+    },
+  });

@@ -3,5 +3,6 @@ export const routes = {
   user_sign_in: '/sign-in',
   login: '/login',
   confirm_otp: '/confirm-otp',
-  role: '/role'
+  role: '/role',
+  refresh: 'refresh'
 }
