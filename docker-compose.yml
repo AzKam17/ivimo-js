@@ -19,15 +19,9 @@ services:
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
       - FILE_DRIVER=${FILE_DRIVER}
-      - WAIT_HOSTS=postgis:5432,redis:6379
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=5
-      - WAIT_HOST_CONNECT_TIMEOUT=30
     depends_on:
-      postgis:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - postgis
+      - redis
 
   postgis:
     image: postgis/postgis:latest
@@ -39,22 +33,18 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - '225immo_backend:/var/lib/postgresql/data:rw'
-    ports:
-      - '${DB_PORT}:5432'
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
   
   redis:
     image: redis:latest
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+  
+  typesense:
+    image: typesense/typesense:28.0
+    restart: on-failure
+    volumes:
+      - typesense-data:/data
+    command: '--data-dir /data --api-key=xyz --enable-cors'
 
 volumes:
   225immo_backend:
   uploads_data:
+  typesense-data:
