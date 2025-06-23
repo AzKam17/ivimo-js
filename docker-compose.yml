@@ -36,15 +36,7 @@ services:
   
   redis:
     image: redis:latest
-  
-  typesense:
-    image: typesense/typesense:28.0
-    restart: on-failure
-    volumes:
-      - typesense-data:/data
-    command: '--data-dir /data --api-key=xyz --enable-cors'
 
 volumes:
   225immo_backend:
   uploads_data:
-  typesense-data:
