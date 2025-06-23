@@ -21,9 +21,9 @@ jobs:
           script: |
             cd ${{ secrets.VPS_DEPLOY_PATH }}
             git pull origin main
-            docker-compose down
-            docker-compose up -d --build
+            docker compose down
+            docker compose up -d --build
             # Add a sleep to wait for services to be ready
             sleep 30
             # Optional: Add a check to verify services are running
-            docker-compose ps
+            docker compose ps
