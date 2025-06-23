@@ -14,13 +14,7 @@ jobs:
         with:
           ref: main
 
-      - name: Create GitHub deployment
-        uses: chrnorm/deployment-action@v2
-        id: deployment
-        with:
-          token: '${{ github.token }}'
-          environment-url: ${{ vars.APP_URL }}
-          environment: production
+      # Removed the problematic deployment action
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
