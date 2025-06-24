@@ -27,7 +27,6 @@ export class EditUserCommand extends BaseCommand {
 
 export class EditUserCommandHandler extends BaseCommandHandler<EditUserCommand, User> {
   async execute(command: EditUserCommand): Promise<User> {
-    console.log(command)
     const repository = UserRepository.getInstance();
 
     await repository.exists({ id: command.id }, true);
