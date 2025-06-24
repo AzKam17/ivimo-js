@@ -69,23 +69,27 @@ export const PropertyController = new Elysia()
     }
   )
 
+  .use(OptionalAuthPlugin)
   .use(ip())
   .get(
     routes.property.detail,
     async ({
       params: { id },
+      user,
       ip,
       queryMediator,
       commandMediator,
     }: {
+      user: User | null,
       params: any;
       ip: any;
       queryMediator: QueryMediator;
       commandMediator: CommandMediator;
     }) => {
+      console.log(user)
       const property = await queryMediator.send(new GetPropertyQuery({ id }));
 
-      if (!Guard.isEmpty(ip)) {
+      if (!Guard.isEmpty(ip) && !user) {
         commandMediator.send(new IncreasePropertyViewsCommand({ id, ip }));
       }
 
