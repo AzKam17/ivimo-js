@@ -28,7 +28,7 @@ jobs:
             # Optional: Add a check to verify services are running
             docker compose ps
             # Install PM2 globally
-            bun install pm2 -g
+            npm install pm2 -g
             # Start typesense sync worker with PM2
             pm2 delete typesense-sync-properties 2>/dev/null || true
             pm2 start ecosystem.config.js
