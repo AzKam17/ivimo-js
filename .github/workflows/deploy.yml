@@ -19,6 +19,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
+            # Source profile to load nvm, bun, and other environment settings
+            source ~/.bashrc
             cd ${{ secrets.VPS_DEPLOY_PATH }}
             git pull origin main
             docker compose down
@@ -27,7 +29,6 @@ jobs:
             sleep 30
             # Optional: Add a check to verify services are running
             docker compose ps
-            touch azkam.txt
             nvm use 22
             # Install PM2 globally
             bun install pm2 -g
