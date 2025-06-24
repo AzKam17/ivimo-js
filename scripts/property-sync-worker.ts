@@ -93,7 +93,7 @@ async function main() {
       }
 
       // Wait for the specified interval before the next sync
-      const syncIntervalMs = 5 * 1000; // 5 seconds
+      const syncIntervalMs = 30 * 1000; // 30 seconds
       logWithTimestamp(`Waiting ${syncIntervalMs}ms before next sync...`);
       await new Promise((resolve) => setTimeout(resolve, syncIntervalMs));
     }
