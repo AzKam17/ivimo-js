@@ -6,6 +6,7 @@ export const routes = {
         root: `${routePath}/`,
         detail: `${routePath}/:id`,
         search: `${routePathAuth}/search`,
+        featured: `${routePathAuth}/featured`,
         recommendation: `${routePath}/recommended/:id`,
     },
     property_auth: {

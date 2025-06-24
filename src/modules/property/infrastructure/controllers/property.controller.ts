@@ -1,4 +1,5 @@
 import { PaginatedResponse } from "@/core/base/responses";
+import type { PropertyType } from "@/core/enums/enums";
 import { Guard } from "@/core/utils";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { OptionalAuthPlugin } from "@/modules/auth/plugins/optionnal-auth.plugin";
@@ -13,6 +14,8 @@ import {
 import { CreatePropertyDto } from "@/modules/property/interface/dtos";
 import { PropertyResponse } from "@/modules/property/interface/property-http.response";
 import {
+  GetFeaturedPropertyQuery,
+  GetFeaturedPropertyQueryHandler,
   GetPropertyQuery,
   GetPropertyQueryHandler,
   GetRecommendedPropertyQuery,
@@ -38,6 +41,7 @@ export const PropertyController = new Elysia()
         [GetPropertyQuery, new GetPropertyQueryHandler()],
         [GetRecommendedPropertyQuery, new GetRecommendedPropertyQueryHandler()],
         [SearchPropertyQuery, new SearchPropertyQueryHandler()],
+        [GetFeaturedPropertyQuery, new GetFeaturedPropertyQueryHandler()]
       ],
     });
   })
@@ -142,6 +146,56 @@ export const PropertyController = new Elysia()
       },
     }
   )
+  .get(routes.property.featured, async ({ queryMediator, query: { type, page, limit } }: { queryMediator: QueryMediator, query: { type: PropertyType, page: number, limit: number } }) => {
+    const result: PaginatedResponse<Property> = await queryMediator.send(new GetFeaturedPropertyQuery({ type, page, limit }));
+
+    return {
+      items: result.items.map((e) => new PropertyResponse({ ...e })),
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+      last_page: result.last_page
+    };
+  },
+  {
+    detail: {
+      summary: "Get featured properties by type",
+      description: "Returns a paginated list of featured properties filtered by property type and ordered by view count",
+      tags: ["Property"],
+      parameters: [
+        {
+          name: "type",
+          in: 'query',
+          description: "Property type to filter by (LAND, APPARTEMENT, VILLA, RESIDENCE)",
+          required: true,
+          schema: {
+            type: 'string'
+          }
+        },
+        {
+          name: "page",
+          in: 'query',
+          description: "Page number for pagination (starts at 1)",
+          required: false,
+          schema: {
+            type: "number",
+            default: 1
+          }
+        },
+        {
+          name: "limit",
+          in: 'query',
+          description: "Number of items per page",
+          required: false,
+          schema: {
+            type: "number",
+            default: 10
+          }
+        }
+      ]
+    }
+  }
+)
   .get(
     routes.property.search,
     async ({ queryMediator, query }: { queryMediator: QueryMediator; query: any }) => {

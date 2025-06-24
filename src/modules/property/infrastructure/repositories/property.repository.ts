@@ -1,3 +1,4 @@
+import type { PropertyType } from "@/core/enums/enums";
 import { BaseRepository } from "@/core/infrastructure/repositories";
 import { Property } from "@/modules/property/infrastructure/entities";
 
@@ -122,5 +123,26 @@ export class PropertyRepository extends BaseRepository<Property> {
     }
 
     return null;
+  }
+
+  /**
+   * Get featured properties by type, ordered by views
+   */
+  async getFeaturedPropertiesByType(
+    type: PropertyType,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ items: Property[]; total: number }> {
+    const skip = (page - 1) * limit;
+    
+    const [items, total] = await this.repository
+      .createQueryBuilder('property')
+      .where('property.type = :type', { type })
+      .orderBy('property.views', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+    
+    return { items, total };
   }
 }
