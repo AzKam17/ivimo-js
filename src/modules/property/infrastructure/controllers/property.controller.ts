@@ -17,6 +17,8 @@ import {
   GetPropertyQueryHandler,
   GetRecommendedPropertyQuery,
   GetRecommendedPropertyQueryHandler,
+  SearchPropertyQuery,
+  SearchPropertyQueryHandler,
 } from "@/modules/property/interface/queries";
 import { routes } from "@/modules/property/routes";
 import Elysia from "elysia";
@@ -35,6 +37,7 @@ export const PropertyController = new Elysia()
       queries: [
         [GetPropertyQuery, new GetPropertyQueryHandler()],
         [GetRecommendedPropertyQuery, new GetRecommendedPropertyQueryHandler()],
+        [SearchPropertyQuery, new SearchPropertyQueryHandler()],
       ],
     });
   })
@@ -112,4 +115,21 @@ export const PropertyController = new Elysia()
         tags: ["Property"],
       },
     }
-  );
+  )
+  .get(
+    routes.property.search,
+    async ({ queryMediator, query }: { queryMediator: QueryMediator; query: any }) => {
+      const result: Property[] = await queryMediator.send(new SearchPropertyQuery({ query }));
+
+      return result.map((e) => new PropertyResponse({ ...e }));
+    },
+    {
+      detail: {
+        summary: "Search properties",
+        description: "Provide an array of all properties",
+        tags: ["Property"],
+      },
+    }
+  )
+  ;
+  ;

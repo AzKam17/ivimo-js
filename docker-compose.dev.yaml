@@ -15,6 +15,17 @@ services:
     ports:
       - '6379:6379'
 
+
+  typesense:
+    image: typesense/typesense:28.0
+    restart: on-failure
+    ports:
+      - '8108:8108'
+    volumes:
+      - typesense-data:/data
+    command: '--data-dir /data --api-key=xyz --enable-cors'
+
 volumes:
   225immo_backend:
   uploads_data:
+  typesense-data:

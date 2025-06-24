@@ -19,6 +19,10 @@ services:
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
       - FILE_DRIVER=${FILE_DRIVER}
+      - TYPESENSE_HOST=${TYPESENSE_HOST}
+      - TYPESENSE_PORT=${TYPESENSE_PORT}
+      - TYPESENSE_PROTOCOL=${TYPESENSE_PROTOCOL}
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
     depends_on:
       - postgis
       - redis
@@ -37,6 +41,14 @@ services:
   redis:
     image: redis:latest
 
+  typesense:
+    image: typesense/typesense:28.0
+    restart: on-failure
+    volumes:
+      - typesense-data:/data
+    command: '--data-dir /data --api-key=xyz --enable-cors'
+
 volumes:
   225immo_backend:
   uploads_data:
+  typesense-data:

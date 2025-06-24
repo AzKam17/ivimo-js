@@ -3,6 +3,7 @@ import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import type { Geometry } from "geojson";
 import { Entity, Column, Index } from "typeorm";
 import type { Metadata } from "@/core/types";
+import type { PropertyType } from "@/core/enums/enums";
 import { PropertyAdTypeEnum } from "@/core/enums/enums";
 
 @Entity({ name: "property" })
@@ -23,7 +24,7 @@ export class Property extends BaseEntity {
   adType: PropertyAdTypeEnum;
 
   @Column({ name: 'type', type: 'varchar', nullable: false})
-  type: string;
+  type: PropertyType;
 
   @Column({ name: "main_image", type: "varchar", nullable: true })
   mainImage?: string;

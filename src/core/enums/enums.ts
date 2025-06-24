@@ -3,6 +3,8 @@ export enum  PropertyAdTypeEnum {
   RENT = "rent",
 }
 
+export type PropertyType = "LAND" | "APPARTEMENT" | "VILLA" | "RESIDENCE"
+
 export enum UserRoleEnum {
   ADMIN = "admin",
   USER = "user",
