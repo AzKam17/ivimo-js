@@ -1,6 +1,8 @@
 import type { PropertyType } from "@/core/enums/enums";
+import { PropertyAdTypeEnum } from "@/core/enums/enums";
 import { BaseRepository } from "@/core/infrastructure/repositories";
 import { Property } from "@/modules/property/infrastructure/entities";
+import { FindOptionsWhere, In, Between, MoreThanOrEqual, LessThanOrEqual } from "typeorm";
 
 export class PropertyRepository extends BaseRepository<Property> {
   private static instance: PropertyRepository;
@@ -144,5 +146,84 @@ export class PropertyRepository extends BaseRepository<Property> {
       .getManyAndCount();
     
     return { items, total };
+  }
+
+  /**
+   * Count all properties with optional filtering
+   * @param filter Optional filter criteria (type, adType, price ranges, etc.)
+   * @param includeInactive Whether to include inactive properties (default: false)
+   * @returns The count of properties matching the criteria
+   */
+  public async countAll(filter: {
+    type?: PropertyType | PropertyType[];
+    adType?: PropertyAdTypeEnum | PropertyAdTypeEnum[];
+    minPrice?: number;
+    maxPrice?: number;
+    createdAfter?: Date;
+    createdBefore?: Date;
+    createdBy?: string;
+    ownedBy?: string;
+    isActive?: boolean;
+  } = {}, includeInactive: boolean = false): Promise<number> {
+    const whereClause: FindOptionsWhere<Property> = {};
+    
+    // Apply type filter
+    if (filter.type) {
+      if (Array.isArray(filter.type)) {
+        whereClause.type = In(filter.type);
+      } else {
+        whereClause.type = filter.type;
+      }
+    }
+    
+    // Apply adType filter
+    if (filter.adType) {
+      if (Array.isArray(filter.adType)) {
+        whereClause.adType = In(filter.adType);
+      } else {
+        whereClause.adType = filter.adType;
+      }
+    }
+    
+    // Apply price range filters
+    if (filter.minPrice !== undefined && filter.maxPrice !== undefined) {
+      whereClause.price = Between(filter.minPrice, filter.maxPrice);
+    } else if (filter.minPrice !== undefined) {
+      whereClause.price = MoreThanOrEqual(filter.minPrice);
+    } else if (filter.maxPrice !== undefined) {
+      whereClause.price = LessThanOrEqual(filter.maxPrice);
+    }
+    
+    // Apply date range filters
+    if (filter.createdAfter && filter.createdBefore) {
+      whereClause.createdAt = Between(filter.createdAfter, filter.createdBefore);
+    } else if (filter.createdAfter) {
+      whereClause.createdAt = MoreThanOrEqual(filter.createdAfter);
+    } else if (filter.createdBefore) {
+      whereClause.createdAt = LessThanOrEqual(filter.createdBefore);
+    }
+    
+    // Apply createdBy filter
+    if (filter.createdBy) {
+      whereClause.createdBy = filter.createdBy;
+    }
+    
+    // Apply ownedBy filter
+    if (filter.ownedBy) {
+      whereClause.ownedBy = filter.ownedBy;
+    }
+    
+    // Apply active status filter
+    if (filter.isActive !== undefined) {
+      whereClause.isActive = filter.isActive;
+    } else if (!includeInactive) {
+      // By default, only count active properties
+      whereClause.isActive = true;
+      whereClause.deletedAt = undefined;
+    }
+    
+    return this.repository.count({
+      where: whereClause as unknown as FindOptionsWhere<Property>,
+    });
   }
 }

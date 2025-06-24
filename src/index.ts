@@ -7,6 +7,7 @@ import { ErrorPlugin } from "@/core/base/errors";
 import { PropertyModule } from "@/modules/property";
 import { AssetModule } from "@/modules/assets";
 import { BusinessModule } from "@/modules/business";
+import { AdminModule } from "@/modules/admin";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
@@ -25,6 +26,7 @@ const app = new Elysia()
           { name: "Auth", description: "Authentication endpoints" },
           { name: "Assets", description: "Assets endpoints" },
           { name: "Appointment", description: "Appointment endpoints" },
+          { name: "Admin", description: "Admin endpoints" },
         ],
         components: {
           securitySchemes: {
@@ -43,6 +45,7 @@ const app = new Elysia()
   .use(AuthModule)
   .use(PropertyModule)
   .use(BusinessModule)
+  .use(AdminModule)
   .get("/health", () => ({ status: "ok", runtime: "bun" }), { detail: { tags: ["General"] } })
   .listen(3000);
 
