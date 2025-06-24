@@ -102,6 +102,17 @@ export const PropertyController = new Elysia()
       detail: {
         summary: "Get a property",
         tags: ["Property"],
+        parameters: [
+          {
+            name: "id",
+            in: 'path',
+            description: "ID of the property to retrieve details on",
+            required: true,
+            schema: {
+              type: 'string'
+            }
+          },
+        ]
       },
     }
   )
@@ -117,6 +128,17 @@ export const PropertyController = new Elysia()
         summary: "Get recommendation for a property",
         description: "Provide an array of recommended properties for a given property",
         tags: ["Property"],
+        parameters: [
+          {
+            name: "id",
+            in: 'path',
+            description: "Use this with the ID of the property to get recommendations relatively.",
+            required: true,
+            schema: {
+              type: 'string'
+            }
+          },
+        ]
       },
     }
   )
