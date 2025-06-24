@@ -1,6 +1,6 @@
+import { PaginatedResponse } from "@/core/base/responses";
 import { Guard } from "@/core/utils";
 import { User } from "@/modules/auth/infrastructure/entities";
-import { AuthRoutesPlugin } from "@/modules/auth/plugins";
 import { OptionalAuthPlugin } from "@/modules/auth/plugins/optionnal-auth.plugin";
 import { RedisPlugin } from "@/modules/config";
 import { Property } from "@/modules/property/infrastructure/entities";
@@ -11,7 +11,7 @@ import {
   IncreasePropertyViewsCommandHandler,
 } from "@/modules/property/interface/commands";
 import { CreatePropertyDto } from "@/modules/property/interface/dtos";
-import { PropertyResponse, PropertyResponseSchema } from "@/modules/property/interface/property-http.response";
+import { PropertyResponse } from "@/modules/property/interface/property-http.response";
 import {
   GetPropertyQuery,
   GetPropertyQueryHandler,
@@ -119,17 +119,70 @@ export const PropertyController = new Elysia()
   .get(
     routes.property.search,
     async ({ queryMediator, query }: { queryMediator: QueryMediator; query: any }) => {
-      const result: Property[] = await queryMediator.send(new SearchPropertyQuery({ query }));
+      const result : PaginatedResponse<Property> = await queryMediator.send(new SearchPropertyQuery({ query }));
 
-      return result.map((e) => new PropertyResponse({ ...e }));
+      return {
+        items: result.items.map((e) => new PropertyResponse({ ...e })),
+        total: result.total,
+        page: result.page,
+        limit: result.limit,
+        last_page: result.last_page
+      };
     },
     {
       detail: {
         summary: "Search properties",
-        description: "Provide an array of all properties",
+        description: "Provide a paginated array of properties",
         tags: ["Property"],
+        parameters: [
+          {
+            name: "q",
+            in: 'query',
+            description: "Search text to find properties by name, description, or address",
+            required: false,
+            schema: {
+              type: 'string'
+            }
+          },
+          {
+            name: "page",
+            in: 'query',
+            description: "Page number for pagination (default: 1)",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+          {
+            name: "limit",
+            in: 'query',
+            description: "Number of items per page (default: 20)",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+          {
+            name: "filter_by",
+            in: 'query',
+            description: "Filter expression for Typesense (e.g., 'adType:=rent && price:>1000')",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+          {
+            name: "facet_by",
+            in: 'query',
+            description: "Fields to facet by (e.g., 'adType,type')",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          }
+        ],
       },
     }
   )
   ;
-  ;
+  

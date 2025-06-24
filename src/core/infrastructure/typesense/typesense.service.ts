@@ -1,4 +1,5 @@
-import { typesenseClient } from './typesense.config';
+import { PaginatedResponse } from "@/core/base/responses";
+import { typesenseClient } from "./typesense.config";
 import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections";
 import { SearchParams, SearchResponse } from "typesense/lib/Typesense/Documents";
 
@@ -21,7 +22,7 @@ export abstract class TypesenseService<T, D extends TypesenseDocument> {
 
   /**
    * Creates a new TypesenseService instance
-   * 
+   *
    * @param collectionName - Name of the collection
    * @param collectionSchema - Schema for the collection
    */
@@ -67,14 +68,14 @@ export abstract class TypesenseService<T, D extends TypesenseDocument> {
 
   /**
    * Upsert entities to Typesense
-   * 
+   *
    * @param entities - Array of entities to upsert
    * @returns Result of the upsert operation
    */
   async upsertEntities(entities: T[]): Promise<any> {
     if (entities.length === 0) return;
 
-    const documents = entities.map(entity => this.entityToDocument(entity));
+    const documents = entities.map((entity) => this.entityToDocument(entity));
 
     try {
       const result = await typesenseClient
@@ -91,7 +92,7 @@ export abstract class TypesenseService<T, D extends TypesenseDocument> {
 
   /**
    * Delete entities from Typesense by ID
-   * 
+   *
    * @param ids - Array of entity IDs to delete
    * @returns Result of the delete operation
    */
@@ -102,10 +103,7 @@ export abstract class TypesenseService<T, D extends TypesenseDocument> {
       // Using filter_by to delete multiple documents by ID
       const filter = `id:=[${ids.map((id) => `'${id}'`).join(",")}]`;
 
-      const result = await typesenseClient
-        .collections(this.collectionName)
-        .documents()
-        .delete({ filter_by: filter });
+      const result = await typesenseClient.collections(this.collectionName).documents().delete({ filter_by: filter });
 
       return result;
     } catch (error) {
@@ -116,20 +114,49 @@ export abstract class TypesenseService<T, D extends TypesenseDocument> {
 
   /**
    * Search for entities in Typesense
-   * 
+   *
    * @param searchParams - Search parameters
    * @returns Hydrated entities matching the search criteria
    */
   async search(searchParams: SearchParams): Promise<T[]> {
     try {
       // Cast the search results to any first, then to the specific type
-      const searchResults = await typesenseClient
+      const searchResults = (await typesenseClient
         .collections(this.collectionName)
         .documents()
-        .search(searchParams) as any as SearchResponse<D>;
-  
+        .search(searchParams)) as any as SearchResponse<D>;
+
       // Convert documents back to entities
-      return searchResults.hits?.map(hit => this.documentToEntity(hit.document)) || [];
+      return searchResults.hits?.map((hit) => this.documentToEntity(hit.document)) || [];
+    } catch (error) {
+      console.error(`Error searching in ${this.collectionName}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Search for entities in Typesense with pagination
+   *
+   * @param searchParams - Search parameters
+   * @returns Raw search response with pagination information
+   */
+  async searchWithPagination(searchParams: SearchParams): Promise<PaginatedResponse<T>> {
+    try {
+      const page = 1;
+      const limit = 20;
+      // Cast the search results to any first, then to the specific type
+      const searchResults = (await typesenseClient
+        .collections(this.collectionName)
+        .documents()
+        .search({ page: 1, limit: 20, ...searchParams })) as any as SearchResponse<D>;
+
+      return {
+        items: searchResults.hits?.map((hit) => this.documentToEntity(hit.document)) || [],
+        total: searchResults.found,
+        page: searchParams.page || page,
+        limit: searchParams.per_page || limit,
+        last_page: Math.ceil(searchResults.found / (searchParams.per_page || limit)),
+      };
     } catch (error) {
       console.error(`Error searching in ${this.collectionName}:`, error);
       throw error;
@@ -138,16 +165,13 @@ export abstract class TypesenseService<T, D extends TypesenseDocument> {
 
   /**
    * Get a document by ID
-   * 
+   *
    * @param id - ID of the document to retrieve
    * @returns Hydrated entity if found
    */
   async getById(id: string): Promise<T | null> {
     try {
-      const document = await typesenseClient
-        .collections(this.collectionName)
-        .documents(id)
-        .retrieve();
+      const document = await typesenseClient.collections(this.collectionName).documents(id).retrieve();
 
       return this.documentToEntity(document as D);
     } catch (error) {
