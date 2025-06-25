@@ -56,7 +56,9 @@ export class Property extends BaseEntity {
     const property = new Property();
     Object.assign(property, props);
     property.views = 0;
-    property.extras.bookmarks = [];
+    property.extras = {
+      bookmarks: []
+    }
     return property;
   }
 }

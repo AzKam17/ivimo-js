@@ -1,4 +1,5 @@
 import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
+import type { PropertyType } from "@/core/enums/enums";
 import { PropertyAdTypeEnum } from "@/core/enums/enums";
 import { FileUtilityAdapter, FileUtilityPort } from "@/core/infrastructure/file";
 import { IGeometry } from "@/core/interface";
@@ -48,7 +49,7 @@ export class CreatePropertyCommandHandler extends BaseCommandHandler<CreatePrope
       name: command.name,
       price: command.price,
       adType: command.ad_type,
-      type: command.type,
+      type: command.type as PropertyType,
       description: command.description,
       address: command.address,
       extras: command.extras,
