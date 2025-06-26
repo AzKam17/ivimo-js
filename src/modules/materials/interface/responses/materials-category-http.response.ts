@@ -4,7 +4,7 @@ export const MaterialsCategoryResponsePropsResponseSchema = t.Object({
   id: t.String(),
   name: t.String(),
   slug: t.String(),
-  string: t.String(),
+  image: t.String(),
   icon: t.String(),
   extras: t.Record(t.String(), t.Any()),
 });
