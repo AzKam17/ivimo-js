@@ -5,8 +5,6 @@ import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 
 @Entity({ name: "materials" })
 export class Materials extends BaseEntity {
-  @Column({ type: "varchar", nullable: false })
-  category_slug: string;
 
   @Column({ type: "varchar" })
   name: string;
@@ -20,17 +18,17 @@ export class Materials extends BaseEntity {
   @Column({ type: "boolean", default: true })
   has_stock?: boolean;
 
-  @Column({ type: "text", nullable: true })
-  quantity_in_stock?: string;
+  @Column({ type: "integer", nullable: true })
+  quantity_in_stock?: number;
 
   @Column({ name: "images", type: "varchar", nullable: true, array: true })
   images?: string[];
 
   @Column({ name: "supplier_id", type: "varchar", nullable: true })
   supplier_id: string;
-
-  @Column({ name: "category_id", type: "varchar", nullable: true })
-  category_id: string;
+  
+  @Column({ type: "varchar", nullable: false })
+  category_slug: string;
 
   @Column({ name: "extras", type: "json" })
   extras: Metadata;

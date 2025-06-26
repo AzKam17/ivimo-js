@@ -1,21 +1,19 @@
-export enum  PropertyAdTypeEnum {
+export enum PropertyAdTypeEnum {
   SALE = "sale",
   RENT = "rent",
 }
 
-export type PropertyType = "LAND" | "APPARTEMENT" | "VILLA" | "RESIDENCE"
+export type PropertyType = "LAND" | "APPARTEMENT" | "VILLA" | "RESIDENCE";
 
 export enum UserRoleEnum {
   ADMIN = "admin",
-  USER = "user",
-  PARTNER = "partner",
-  AGENT = "agent"
 }
 
 export enum UserRoleEnumWithoutAdmin {
-  USER = UserRoleEnum.USER,
-  PARTNER = UserRoleEnum.PARTNER,
-  AGENT = UserRoleEnum.AGENT
+  USER = "user",
+  PARTNER = "partner",
+  AGENT = "agent",
+  SUPPLIER = "supplier",
 }
 
 // export namespace PropertyAdTypeEnum {
