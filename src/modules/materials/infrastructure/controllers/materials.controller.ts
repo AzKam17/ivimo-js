@@ -1,10 +1,11 @@
+import { PaginatedResponse } from "@/core/base/responses";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
 import { Materials, MaterialsCategory } from "@/modules/materials/infrastructure/entities";
 import { rejectNonSupplierUser } from "@/modules/materials/infrastructure/services/misc";
 import { CreateMaterialCommand, CreateMaterialCommandHandler } from "@/modules/materials/interface/commands";
 import { CreateMaterialDto } from "@/modules/materials/interface/dtos";
-import { GetMaterialsCategoryQuery, GetMaterialsCategoryQueryHandler } from "@/modules/materials/interface/queries";
+import { GetMaterialsCategoryQuery, GetMaterialsCategoryQueryHandler, SearchMaterialsQuery, SearchMaterialsQueryHandler } from "@/modules/materials/interface/queries";
 import {
   MaterialsCategoryResponse,
   MaterialsCategoryResponsePropsResponseSchema,
@@ -19,7 +20,10 @@ import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
 export const MaterialsController = new Elysia({ prefix: "/materials" })
   .use(({ decorator }) => {
     return cqrs({
-      queries: [[GetMaterialsCategoryQuery, new GetMaterialsCategoryQueryHandler()]],
+      queries: [
+        [GetMaterialsCategoryQuery, new GetMaterialsCategoryQueryHandler()],
+        [SearchMaterialsQuery, new SearchMaterialsQueryHandler()],
+      ],
       commands: [
         [CreateMaterialCommand, new CreateMaterialCommandHandler()],
       ]
@@ -39,6 +43,74 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         tags: ["Materials"],
         summary: "Get materials category",
         description: "Get all materials category",
+      },
+    }
+  )
+  .get(
+    routes.materials.search,
+    async ({ queryMediator, query }: { queryMediator: QueryMediator; query: any }) => {
+      const result: PaginatedResponse<Materials> = await queryMediator.send(new SearchMaterialsQuery({ query }));
+
+      return {
+        items: result.items.map((e) => new MaterialsResponse({ ...e })),
+        total: result.total,
+        page: result.page,
+        limit: result.limit,
+        last_page: result.last_page
+      };
+    },
+    {
+      detail: {
+        summary: "Search materials",
+        description: "Provide a paginated array of materials",
+        tags: ["Materials"],
+        parameters: [
+          {
+            name: "q",
+            in: 'query',
+            description: "Search text to find materials by name, description, or category",
+            required: false,
+            schema: {
+              type: 'string'
+            }
+          },
+          {
+            name: "page",
+            in: 'query',
+            description: "Page number for pagination (default: 1)",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+          {
+            name: "limit",
+            in: 'query',
+            description: "Number of items per page (default: 20)",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+          {
+            name: "filter_by",
+            in: 'query',
+            description: "Filter expression for Typesense (e.g., 'has_stock:=true && price:>1000')",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          },
+          {
+            name: "facet_by",
+            in: 'query',
+            description: "Fields to facet by (e.g., 'category_slug,has_stock')",
+            required: false,
+            schema: {
+              type: "string",
+            }
+          }
+        ],
       },
     }
   )

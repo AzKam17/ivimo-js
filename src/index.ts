@@ -9,10 +9,12 @@ import { AssetModule } from "@/modules/assets";
 import { BusinessModule } from "@/modules/business";
 import { AdminModule } from "@/modules/admin";
 import { MaterialsModule } from "@/modules/materials";
+import cors from "@elysiajs/cors";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
 const app = new Elysia()
+.use(cors())
   .use(
     swagger({
       documentation: {
