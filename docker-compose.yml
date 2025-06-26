@@ -26,6 +26,33 @@ services:
     depends_on:
       - postgis
       - redis
+      - typesense
+
+  sync-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["bun", "run", "scripts/property-sync-worker.ts"]
+    mem_limit: 128M
+    cpus: "0.1"
+    restart: unless-stopped
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DB_HOST=postgis
+      - DB_PORT=5432
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - TYPESENSE_HOST=${TYPESENSE_HOST}
+      - TYPESENSE_PORT=${TYPESENSE_PORT}
+      - TYPESENSE_PROTOCOL=${TYPESENSE_PROTOCOL}
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+    depends_on:
+      - postgis
+      - typesense
 
   postgis:
     image: postgis/postgis:latest
