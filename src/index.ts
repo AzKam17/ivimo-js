@@ -8,6 +8,7 @@ import { PropertyModule } from "@/modules/property";
 import { AssetModule } from "@/modules/assets";
 import { BusinessModule } from "@/modules/business";
 import { AdminModule } from "@/modules/admin";
+import { MaterialsModule } from "@/modules/materials";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
@@ -27,6 +28,7 @@ const app = new Elysia()
           { name: "Assets", description: "Assets endpoints" },
           { name: "Appointment", description: "Appointment endpoints" },
           { name: "Admin", description: "Admin endpoints" },
+          { name: "Materials", description: "Materials endpoints" },
         ],
         components: {
           securitySchemes: {
@@ -46,6 +48,7 @@ const app = new Elysia()
   .use(PropertyModule)
   .use(BusinessModule)
   .use(AdminModule)
+  .use(MaterialsModule)
   .get("/health", () => ({ status: "ok", runtime: "bun" }), { detail: { tags: ["General"] } })
   .listen(3000);
 

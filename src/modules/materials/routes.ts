@@ -1,5 +1,7 @@
-import { Elysia } from 'elysia';
+const routePath = 'api/v1/materials'
 
-export const materialsRoutes = new Elysia({ name: 'materials' })
-  // Add your routes here
-  .get('/', () => 'Hello from materials module');
+export const routes = {
+    materials: {
+        root: `${routePath}`,
+    }
+  }
