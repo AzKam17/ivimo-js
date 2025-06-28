@@ -77,7 +77,7 @@ export class MaterialsTypesenseService extends TypesenseService<Materials, Mater
     material.price = document.price;
     material.has_stock = document.has_stock;
     material.quantity_in_stock = document.quantity_in_stock;
-    material.images = JSON.parse(document.images);
+    material.images = JSON.parse(document.images) || [];
     material.supplier_id = document.supplier_id;
     material.category_slug = document.category_slug;
     material.extras = JSON.parse(document.extras);

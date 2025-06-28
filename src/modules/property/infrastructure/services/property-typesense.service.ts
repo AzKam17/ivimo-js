@@ -11,6 +11,8 @@ interface PropertyDocument extends TypesenseDocument {
   address: string;
   adType: string;
   type: string;
+  main_image: string;
+  images: string;
   views: number;
   createdBy: string;
   ownedBy: string;
@@ -35,6 +37,8 @@ export class PropertyTypesenseService extends TypesenseService<Property, Propert
         { name: 'address', type: 'string' as FieldType, facet: false, optional: true },
         { name: 'adType', type: 'string' as FieldType, facet: true },
         { name: 'type', type: 'string' as FieldType, facet: true },
+        { name: 'main_image', type: 'string' as FieldType, facet: true, optional: true },
+        { name: 'images', type: 'string' as FieldType, facet: false, optional: true },
         { name: 'views', type: 'int32' as FieldType, facet: false },
         { name: 'createdBy', type: 'string' as FieldType, facet: false, optional: true },
         { name: 'ownedBy', type: 'string' as FieldType, facet: false, optional: true },
@@ -61,6 +65,8 @@ export class PropertyTypesenseService extends TypesenseService<Property, Propert
       address: property.address || '',
       adType: property.adType,
       type: property.type,
+      main_image: property.mainImage || '',
+      images: JSON.stringify(property.images || []),
       views: property.views,
       createdBy: property.createdBy || '',
       ownedBy: property.ownedBy || '',
@@ -84,6 +90,8 @@ export class PropertyTypesenseService extends TypesenseService<Property, Propert
     property.createdBy = document.createdBy;
     property.ownedBy = document.ownedBy;
     property.type = document.type as PropertyType;
+    property.mainImage = document.main_image;
+    property.images = JSON.parse(document.images) || [];
     property.extras = JSON.parse(document.extras);
     property.createdAt = new Date(document.created_at);
     property.updatedAt = new Date(document.updated_at);
