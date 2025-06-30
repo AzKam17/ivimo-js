@@ -6,15 +6,17 @@ export enum PropertyAdTypeEnum {
 export type PropertyType = "LAND" | "APPARTEMENT" | "VILLA" | "RESIDENCE";
 
 export enum UserRoleEnum {
-  ADMIN = "admin",
+  ADMIN =       "admin",
+  CLIENT =      "client",
+  AGENT_COM =   "agent_com",
+  RESP_COM =    "resp_com",
+  PARTNER =     "partner",
+  FOURNISSEUR = "fournisseur",
+  AGENT_OPS =   "agent_ops",
+  RESP_OPS =    "resp_ops"
 }
 
-export enum UserRoleEnumWithoutAdmin {
-  USER = "user",
-  PARTNER = "partner",
-  AGENT = "agent",
-  SUPPLIER = "supplier",
-}
+export type UserRoleEnumWithoutAdmin = Exclude<UserRoleEnum, UserRoleEnum.ADMIN>
 
 // export namespace PropertyAdTypeEnum {
 //   export function from(value: string): PropertyAdTypeEnum {

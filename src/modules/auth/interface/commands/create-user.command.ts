@@ -2,7 +2,7 @@ import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/class
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { BaseError } from "@/core/base/errors";
-import { UserRoleEnumWithoutAdmin } from "@/core/enums/enums";
+import { UserRoleEnum, type UserRoleEnumWithoutAdmin } from "@/core/enums/enums";
 import { Guard } from "@/core/utils";
 
 export class CreateUserCommand extends BaseCommand {
@@ -41,7 +41,7 @@ export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCo
       });
     }
 
-    const role = Guard.isEmpty(query.role) ? {role: UserRoleEnumWithoutAdmin.USER} : {role: query.role};
+    const role = Guard.isEmpty(query.role) ? {role: UserRoleEnum.CLIENT} : {role: query.role};
     
     const user = await repository.save(
       User.create({

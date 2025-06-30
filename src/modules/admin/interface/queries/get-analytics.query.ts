@@ -1,12 +1,13 @@
 import { BaseQuery, BaseQueryHandler, QueryProps } from "@/core/base/classes";
-import { UserRoleEnum, UserRoleEnumWithoutAdmin } from "@/core/enums/enums";
+import { UserRoleEnum } from "@/core/enums/enums";
+import type { UserRoleEnumWithoutAdmin } from "@/core/enums/enums";
 import type { Metadata } from "@/core/types";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { RedisClient } from "bun";
 
 export class GetAnalyticsQuery extends BaseQuery {
   user_id: any;
-  role: UserRoleEnum | UserRoleEnumWithoutAdmin;
+  role: UserRoleEnum;
 
   constructor(props: QueryProps<GetAnalyticsQuery>) {
     super(props);
