@@ -162,7 +162,8 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
       return new MaterialsResponse({ ...result });
     },
     {
-      body: CreateMaterialDto,
+      // body: CreateMaterialDto,
+      type: "formdata",
       response: {
         200: MaterialsResponsePropsResponseSchema,
       },
