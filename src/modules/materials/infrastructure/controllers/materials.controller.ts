@@ -150,7 +150,7 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
   .post(
     routes.materials.root,
     async ({ user, body, commandMediator }: { user: User; body: any; commandMediator: CommandMediator }) => {
-      rejectNonSupplierUser(user);
+      //rejectNonSupplierUser(user);
 
       const result: Materials = await commandMediator.send(
         new CreateMaterialCommand({
