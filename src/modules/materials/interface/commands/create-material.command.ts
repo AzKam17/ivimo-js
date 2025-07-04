@@ -7,10 +7,10 @@ import { FileUtilityPort, FileUtilityAdapter } from "@/core/infrastructure/file"
 
 export class CreateMaterialCommand extends BaseCommand {
   name: string;
-  price: number;
+  price: string | number;
   description?: string;
   has_stock?: boolean;
-  quantity_in_stock?: number;
+  quantity_in_stock?: string | number;
   images?: File[];
   supplier_id: string;
   category_slug: string;
@@ -53,10 +53,10 @@ export class CreateMaterialCommandHandler extends BaseCommandHandler<CreateMater
     const material = Materials.create({
       images,
       name: command.name,
-      price: command.price,
+      price: typeof command.price === "string" ? parseFloat(command.price) : command.price,
       description: command.description,
       has_stock: command.has_stock,
-      quantity_in_stock: command.quantity_in_stock,
+      quantity_in_stock: typeof command.quantity_in_stock === "string" ? parseInt(command.quantity_in_stock) : command.quantity_in_stock,
       supplier_id: command.supplier_id,
       category_slug: command.category_slug,
       extras: command.extras,
