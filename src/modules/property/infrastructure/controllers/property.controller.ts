@@ -90,7 +90,6 @@ export const PropertyController = new Elysia()
       queryMediator: QueryMediator;
       commandMediator: CommandMediator;
     }) => {
-      console.log(user)
       const property = await queryMediator.send(new GetPropertyQuery({ id }));
 
       if (!Guard.isEmpty(ip) && !user) {

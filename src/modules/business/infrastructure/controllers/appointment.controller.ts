@@ -1,7 +1,12 @@
 import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin, OptionalAuthPlugin } from "@/modules/auth/plugins";
 import { Appointment } from "@/modules/business/infrastructure/entities";
-import { CreateAppointmentCommand, CreateAppointmentCommandHandler } from "@/modules/business/interface/commands";
+import {
+  CreateAppointmentCommand,
+  CreateAppointmentCommandHandler,
+  UpdateAppointmentCommand,
+  UpdateAppointmentCommandHandler,
+} from "@/modules/business/interface/commands";
 import { GetAppointmentsQuery, GetAppointmentsQueryHandler } from "@/modules/business/interface/queries";
 import { CreateAppointmentDto, UpdateAppointmentDto } from "@/modules/business/interface/dtos";
 import { AppointmentResponse } from "@/modules/business/interface/responses";
@@ -12,7 +17,10 @@ import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
 export const AppointmentController = new Elysia()
   .use(({ decorator }) => {
     return cqrs({
-      commands: [[CreateAppointmentCommand, new CreateAppointmentCommandHandler()]],
+      commands: [
+        [CreateAppointmentCommand, new CreateAppointmentCommandHandler()],
+        [UpdateAppointmentCommand, new UpdateAppointmentCommandHandler()],
+      ],
       queries: [[GetAppointmentsQuery, new GetAppointmentsQueryHandler()]],
     });
   })
@@ -85,8 +93,25 @@ export const AppointmentController = new Elysia()
   )
   .put(
     routes.appointment.detail,
-    async () => {
-      return "dewf";
+    async ({
+      params: { id },
+      body,
+      user,
+      commandMediator,
+    }: {
+      body: any;
+      params: any;
+      user: User;
+      commandMediator: CommandMediator;
+    }) => {
+      const result: Appointment = await commandMediator.send(
+        new UpdateAppointmentCommand({
+          ...body,
+          id,
+          user_id: user.id,
+        })
+      );
+      return () => new AppointmentResponse({ ...result });
     },
     {
       body: UpdateAppointmentDto,
