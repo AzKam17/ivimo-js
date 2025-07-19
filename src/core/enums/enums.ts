@@ -18,6 +18,12 @@ export enum UserRoleEnum {
 
 export type UserRoleEnumWithoutAdmin = Exclude<UserRoleEnum, UserRoleEnum.ADMIN>
 
+export enum AppointmentStatus {
+  DONE = "done",
+  PENDING = "pending",
+  PAST = "past",
+}
+
 // export namespace PropertyAdTypeEnum {
 //   export function from(value: string): PropertyAdTypeEnum {
 //     switch (value.toLowerCase()) {
