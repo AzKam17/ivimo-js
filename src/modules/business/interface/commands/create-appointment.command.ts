@@ -1,5 +1,6 @@
 import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/classes";
 import { BaseError } from "@/core/base/errors";
+import { UserRoleEnum } from "@/core/enums/enums";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { Appointment } from "@/modules/business/infrastructure/entities";
 import { AppointmentRepository } from "@/modules/business/infrastructure/repositories";
@@ -40,17 +41,22 @@ export class CreateAppointmentCommandHandler extends BaseCommandHandler<CreateAp
       });
     }
 
+    let clientId = undefined;
     if (command.client_id) {
-      await userRepository.exists({ id: command.client_id }, true);
+      const user = await userRepository.findById(command.client_id);
+      if (!!user && user.role === UserRoleEnum.CLIENT) {
+        clientId = user.id;
+      }
     }
 
+    console.log(command);
     const apptmt = Appointment.create({
       startDate: moment(command.start_date).toDate(),
       endDate: moment(command.end_date).toDate(),
       propertyId: command.property_id,
-      agentId: property.ownedBy || property.createdBy,
-      clientId: command.client_id,
-      createdBy: command.client_id,
+      agentId: property.ownedBy || property.createdBy || "anonymous",
+      clientId: clientId,
+      createdBy: command.created_by,
       extras: command.extras,
     });
 

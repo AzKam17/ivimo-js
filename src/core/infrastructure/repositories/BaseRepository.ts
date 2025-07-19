@@ -1,4 +1,4 @@
-import { Repository, DataSource, FindOptionsWhere, DeepPartial } from "typeorm";
+import { Repository, DataSource, FindOptionsWhere, DeepPartial, Or } from "typeorm";
 import { AppDataSource } from "@/modules/config";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
@@ -119,5 +119,17 @@ export class BaseRepository<T extends BaseEntity> {
 
   public async findAllEvenDeleted(): Promise<T[]> {
     return this.repository.find();
+  }
+
+  public async findByOr(conditions: Partial<T>[]): Promise<T[]> {
+    const whereConditions = conditions.map(condition => ({
+      ...condition,
+      isActive: true,
+      deletedAt: null,
+    } as FindOptionsWhere<T>));
+
+    return this.repository.find({
+      where: whereConditions, // Use array directly instead of Or(...whereConditions)
+    });
   }
 }
