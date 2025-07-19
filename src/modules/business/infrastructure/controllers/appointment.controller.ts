@@ -3,7 +3,7 @@ import { AuthRoutesPlugin, OptionalAuthPlugin } from "@/modules/auth/plugins";
 import { Appointment } from "@/modules/business/infrastructure/entities";
 import { CreateAppointmentCommand, CreateAppointmentCommandHandler } from "@/modules/business/interface/commands";
 import { GetAppointmentsQuery, GetAppointmentsQueryHandler } from "@/modules/business/interface/queries";
-import { CreateAppointmentDto } from "@/modules/business/interface/dtos";
+import { CreateAppointmentDto, UpdateAppointmentDto } from "@/modules/business/interface/dtos";
 import { AppointmentResponse } from "@/modules/business/interface/responses";
 import { routes } from "@/modules/business/routes";
 import Elysia from "elysia";
@@ -47,7 +47,7 @@ export const AppointmentController = new Elysia()
         new GetAppointmentsQuery({
           userId: user.id,
           startDate: query?.startDate,
-          endDate: query?.endDate
+          endDate: query?.endDate,
         })
       );
 
@@ -63,21 +63,45 @@ export const AppointmentController = new Elysia()
         parameters: [
           {
             name: "startDate",
-            in: 'query',
+            in: "query",
             description: "Search text to find properties by name, description, or address",
             required: false,
             schema: {
-              type: 'string'
-            }
+              type: "string",
+            },
           },
           {
             name: "endDate",
-            in: 'query',
+            in: "query",
             description: "Page number for pagination (default: 1)",
             required: false,
             schema: {
               type: "number",
-            }
+            },
+          },
+        ],
+      },
+    }
+  )
+  .put(
+    routes.appointment.detail,
+    async () => {
+      return "dewf";
+    },
+    {
+      body: UpdateAppointmentDto,
+      detail: {
+        summary: "Update an appointment",
+        tags: ["Appointment", "Business"],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "ID of the appointment to update",
+            required: true,
+            schema: {
+              type: "string",
+            },
           },
         ],
       },
