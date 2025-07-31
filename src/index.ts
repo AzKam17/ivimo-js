@@ -10,6 +10,7 @@ import { BusinessModule } from "@/modules/business";
 import { AdminModule } from "@/modules/admin";
 import { MaterialsModule } from "@/modules/materials";
 import cors from "@elysiajs/cors";
+import { PartnerModule } from "./modules/Partner";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
@@ -48,6 +49,7 @@ const app = new Elysia()
   .use(AssetModule)
   .use(AuthModule)
   .use(PropertyModule)
+  .use(PartnerModule)
   .use(BusinessModule)
   .use(AdminModule)
   .use(MaterialsModule)

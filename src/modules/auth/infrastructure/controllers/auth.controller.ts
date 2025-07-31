@@ -41,6 +41,7 @@ export const AuthController = new Elysia()
       ],
     });
   })
+  // create user by default
   .post(
     routes.user_sign_in,
     async ({ body, commandMediator }: { body: any; commandMediator: CommandMediator }) => {
@@ -61,9 +62,11 @@ export const AuthController = new Elysia()
       },
     }
   )
+  // login user
   .post(
     routes.login,
     async ({ body, commandMediator, set }: { body: any; commandMediator: CommandMediator; set: any }) => {
+      console.log('body user => ', body)
       const result: User = await commandMediator.send(
         new LoginCommand({
           ...body,
@@ -83,6 +86,7 @@ export const AuthController = new Elysia()
       },
     }
   )
+  // confirm OTP
   .post(
     routes.confirm_otp,
     async ({ body, commandMediator }: { body: any; commandMediator: CommandMediator }) => {
@@ -117,6 +121,7 @@ export const AuthController = new Elysia()
       },
     }
   )
+  // update user
   .use(AuthRoutesPlugin)
   .put(
     routes.root,
@@ -140,6 +145,7 @@ export const AuthController = new Elysia()
       },
     }
   )
+  // refresh token
   .use(AuthRoutesPlugin)
   .get(routes.refresh, async ({ user }: { user: User }) => {
     return () => new UserResponse({ ...user });

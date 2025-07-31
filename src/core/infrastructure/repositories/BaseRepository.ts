@@ -1,4 +1,4 @@
-import { Repository, DataSource, FindOptionsWhere, DeepPartial } from "typeorm";
+import { Repository, DataSource, FindOptionsWhere, DeepPartial, FindManyOptions, In } from "typeorm";
 import { AppDataSource } from "@/modules/config";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
@@ -11,8 +11,30 @@ interface BaseEntity {
 export class BaseRepository<T extends BaseEntity> {
   protected repository: Repository<T>;
 
-  constructor(entity: { new (): T }, dataSource: DataSource = AppDataSource) {
+  constructor(entity: { new(): T }, dataSource: DataSource = AppDataSource) {
     this.repository = dataSource.getRepository(entity);
+  }
+
+  public async find(where: Partial<T>, roles: []): Promise<{ data: T[]; total: number; page: number; pageCount: number }> {
+    const page: number = 1;
+    const limit: number = 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.repository.findAndCount({
+      where: {
+        ...where,
+        role: In(roles)
+      } as FindOptionsWhere<T>,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 
   public async save(entity: T): Promise<T> {
@@ -41,7 +63,7 @@ export class BaseRepository<T extends BaseEntity> {
   public async findOneBy(where: Partial<T>): Promise<T | null> {
     return this.repository.findOne({
       where: {
-       ...where,
+        ...where,
         isActive: true,
         deletedAt: null,
       } as FindOptionsWhere<T>,
@@ -69,6 +91,30 @@ export class BaseRepository<T extends BaseEntity> {
       where: {
         ...where,
         isActive: true,
+        deletedAt: null,
+      } as FindOptionsWhere<T>,
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
+  }
+
+  public async findAllManyWithPagination(
+    where: Partial<T>,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ data: T[]; total: number; page: number; pageCount: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.repository.findAndCount({
+      where: {
+        ...where,
         deletedAt: null,
       } as FindOptionsWhere<T>,
       skip,
@@ -113,11 +159,49 @@ export class BaseRepository<T extends BaseEntity> {
     if (throwError && count === 0) {
       throw new Error("Entity not found");
     }
-    
+
     return count > 0;
   }
 
   public async findAllEvenDeleted(): Promise<T[]> {
     return this.repository.find();
   }
+
+
+  public async findOneByWhithoutParamIsActive(where: Partial<T>, throwError: boolean = false): Promise<T | null> {
+    console.log('\n identifiant ', where.id)
+    const user = await this.repository.findOne({
+      where: {
+        id: where.id,
+      } as FindOptionsWhere<T>,
+    });
+
+    if (throwError && !user) {
+      throw new Error("Entity not found");
+    }
+
+    return user;
+  }
+
+  public async existsWhithoutIsActive(where: Partial<T>, throwError: boolean = false): Promise<boolean> {
+    console.log("where => ", where)
+    const count = await this.repository.count({
+      where: {
+        ...where,
+        id: where.id,
+        deletedAt: null,
+      } as FindOptionsWhere<T>,
+    });
+
+    if (throwError && count === 0) {
+      throw new Error("Entity not found");
+    }
+
+    return count > 0;
+  }
+
+  public getRepositoryDatabase() {
+    return this.repository;
+  }
+
 }

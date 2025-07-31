@@ -18,6 +18,9 @@ export enum UserRoleEnum {
 
 export type UserRoleEnumWithoutAdmin = Exclude<UserRoleEnum, UserRoleEnum.ADMIN>
 
+export const UserRoleEnumWithoutAdminAndFournisseurAndClient = Object.values(UserRoleEnum).filter(item => item !== UserRoleEnum.FOURNISSEUR && item !== UserRoleEnum.ADMIN && item !== UserRoleEnum.CLIENT)
+export const UserRoleEnumWithoutAdminAndFournisseur = Object.values(UserRoleEnum).filter(item => item !== UserRoleEnum.FOURNISSEUR && item !== UserRoleEnum.ADMIN)
+
 // export namespace PropertyAdTypeEnum {
 //   export function from(value: string): PropertyAdTypeEnum {
 //     switch (value.toLowerCase()) {
