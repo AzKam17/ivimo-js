@@ -18,7 +18,7 @@ export class ListUserPartnerQuery extends BaseQuery {
     this.currentUser = props.currentUser;
   }
 
-  convertStringToArray(value: string): string[] {
+  private convertStringToArray(value: string): string[] {
     const val = value.split(',') as string[] | [];
     console.log('\n val => ', val)
     return val

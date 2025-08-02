@@ -1,3 +1,4 @@
+import { UserRoleEnumWithoutAdminAndFournisseur } from './../../../../core/enums/enums';
 import { EditUserPartnerQueryHandler } from './../../interface/commands/edit-user-partner.command';
 import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
@@ -5,9 +6,10 @@ import Elysia from "elysia";
 import { CommandMediator, cqrs, QueryMediator } from "elysia-cqrs";
 import { routes } from "../../routes";
 import { UserResponse } from "@/modules/auth/interface/user-http.response";
-import {  ActiveUserPartnerQuery, ActiveUserPartnerQueryHandler, CreateUserPartnerCommand, CreateUserPartnerCommandHandler, DiseableUserPartnerQuery, DiseableUserPartnerQueryHandler, EditUserPartnerQuery } from "../../interface/commands";
+import { ActiveUserPartnerQuery, ActiveUserPartnerQueryHandler, CreateUserPartnerCommand, CreateUserPartnerCommandHandler, DiseableUserPartnerQuery, DiseableUserPartnerQueryHandler, EditUserPartnerQuery } from "../../interface/commands";
 import { CreateUserPartenaireDto, EditUserPartenaireDto } from "../../interface/dtos";
 import { ListUserPartnerQuery, ListUserPartnerQueryHandler } from "../../interface/queries/list-user-partner.query";
+import { UserRoleEnum } from '@/core/enums/enums';
 
 export const PartnerController = new Elysia()
   .use(({ decorator }) => {
@@ -27,19 +29,54 @@ export const PartnerController = new Elysia()
   .use(AuthRoutesPlugin)
   .get(
     routes.partner_auth.list,
-    async ({queryMediator, user, query }: { queryMediator: QueryMediator, user: User, query: {roles: string, limit: number, page: number}}) => {
+    async ({ queryMediator, user, query }: { queryMediator: QueryMediator, user: User, query: { roles: typeof UserRoleEnumWithoutAdminAndFournisseur, limit: number, page: number } }) => {
       /**
        * Liste des utilisateur doit tenir compte du business_id, createBy
        */
-      console.log("roles => ", query.roles )
-    
-      const result: { data: User[]; total: number; page: number; pageCount: number } = 
-                  await queryMediator.send(new ListUserPartnerQuery({ companyId: user.companyId, params: query }));
+      console.log("roles => ", query.roles)
+
+      const result: { data: User[]; total: number; page: number; pageCount: number } =
+        await queryMediator.send(new ListUserPartnerQuery({ companyId: user.companyId, params: query }));
       console.log('\nresult => ', result)
       return () => result;
 
     },
-    newFunction(null,  { }, 'List - List User Partner')
+    newFunction({
+      detail: {
+        summary: 'List - List User Partner',
+        parameters: [
+          {
+            name: 'role',
+            in: 'query',
+            description: "Search text to find properties by name, description, or address",
+            required: false,
+            schema: {
+              type: 'string',
+              enum: Object.values(UserRoleEnumWithoutAdminAndFournisseur)
+            }
+          },
+          {
+            name: "page",
+            in: 'query',
+            description: "Page number for pagination (default: 1)",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+          {
+            name: "limit",
+            in: 'query',
+            description: "Number of items per page",
+            required: false,
+            schema: {
+              type: "number",
+            }
+          },
+        ]
+      }
+    })
+
   )
   // create user partner
   .post(
@@ -55,12 +92,12 @@ export const PartnerController = new Elysia()
       );
       return new UserResponse(result);
     },
-    newFunction(CreateUserPartenaireDto, UserResponse, "Sign in - Create new User Partner")
+    newFunction({ body: CreateUserPartenaireDto, reponse: UserResponse, detail: { summary: "Sign in - Create new User Partner" } })
   )
   // update profil
   .put(
     routes.partner_auth.detail,
-    async ({params: { id } , queryMediator, body, user }: { queryMediator: QueryMediator, body: any, params: any, user: User }) => {
+    async ({ params: { id }, queryMediator, body, user }: { queryMediator: QueryMediator, body: any, params: any, user: User }) => {
       console.log('user', user)
       const result: User = await queryMediator.send(
         new EditUserPartnerQuery({
@@ -72,7 +109,7 @@ export const PartnerController = new Elysia()
 
       return () => new UserResponse({ ...result });
     },
-    newFunction(EditUserPartenaireDto, UserResponse, "Edit - edit User partner")
+    newFunction({ body: EditUserPartenaireDto, reponse: UserResponse, detail: { summary: "Edit - edit User partner" } })
   )
   // disable profil
   .get(
@@ -83,7 +120,7 @@ export const PartnerController = new Elysia()
       }));
       return () => new UserResponse({ ...result });
     },
-    newFunction(null, {}, "Diseable - diseable User partner")
+    newFunction({ detail: { summary: "Diseable - diseable User partner" } })
   )
   // active profil
   .get(
@@ -93,22 +130,24 @@ export const PartnerController = new Elysia()
         id
       }));
       return () => new UserResponse({ ...result });
-    },
-    newFunction(null, null, "Active - active User partner")
+    }, newFunction({ detail: { summary: "Active - active User partner" } })
   )
 
-function newFunction(body: any, response: any, summary: string, tags: string[] = ["Partner"]) {
-  return {
-    body,
-    response,
-    detail: {
-      summary,
-      tags,
-    },
-  };
+function newFunction<T = any>(data: {
+  body?: T,
+  response?: T,
+  detail:
+  {
+    summary?: string,
+    tags?: string[],
+    parameters?: { name: string, in: string, description: string, required: boolean, schema: any }[]
+  }
+}) {
+  data.detail.tags = ["Partner"]
+  return data;
 }
 
-interface ResponsePaginate { 
+interface ResponsePaginate {
   data: UserResponse[],
   total: number,
   page: number,
