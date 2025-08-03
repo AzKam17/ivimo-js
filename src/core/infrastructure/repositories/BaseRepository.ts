@@ -1,4 +1,4 @@
-import { Repository, DataSource, FindOptionsWhere, DeepPartial, FindManyOptions, In } from "typeorm";
+import { Repository, DataSource, FindOptionsWhere, DeepPartial, Or, FindManyOptions, In } from "typeorm";
 import { AppDataSource } from "@/modules/config";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
@@ -167,7 +167,6 @@ export class BaseRepository<T extends BaseEntity> {
     return this.repository.find();
   }
 
-
   public async findOneByWhithoutParamIsActive(where: Partial<T>, throwError: boolean = false): Promise<T | null> {
     console.log('\n identifiant ', where.id)
     const user = await this.repository.findOne({
@@ -204,4 +203,15 @@ export class BaseRepository<T extends BaseEntity> {
     return this.repository;
   }
 
+  public async findByOr(conditions: Partial<T>[]): Promise<T[]> {
+    const whereConditions = conditions.map(condition => ({
+      ...condition,
+      isActive: true,
+      deletedAt: null,
+    } as FindOptionsWhere<T>));
+
+    return this.repository.find({
+      where: whereConditions, // Use array directly instead of Or(...whereConditions)
+    });
+  }
 }

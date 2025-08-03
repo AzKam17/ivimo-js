@@ -21,6 +21,7 @@ export interface AppointmentResponseProps {
   is_all_day: boolean;
   property_id: string;
   agent_id: string;
+  status: string;
   client_id?: string;
   created_by?: string;
   created_at: string;
@@ -37,6 +38,7 @@ export class AppointmentResponse {
       is_all_day: props.isAllDay,
       property_id: props.propertyId,
       agent_id: props.agentId,
+      status: props.status,
       client_id: props.clientId,
       created_by: props.createdBy,
       created_at: props.createdAt.toISOString(),
