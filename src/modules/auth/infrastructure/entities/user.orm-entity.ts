@@ -1,7 +1,7 @@
 import { UserRoleEnum } from "@/core/enums/enums";
 import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import type { Metadata } from "@/core/types";
-import { Entity, Column, IsNull } from "typeorm";
+import { Entity, Column } from "typeorm";
 
 @Entity()
 export class User extends BaseEntity {
@@ -13,7 +13,6 @@ export class User extends BaseEntity {
   
   @Column('varchar', { unique: true })
   email: string;
-
 
   @Column({ type: "enum", name: 'role', enum: UserRoleEnum, default: UserRoleEnum.CLIENT})
   role: UserRoleEnum;
