@@ -10,7 +10,7 @@ import { BusinessModule } from "@/modules/business";
 import { AdminModule } from "@/modules/admin";
 import { MaterialsModule } from "@/modules/materials";
 import cors from "@elysiajs/cors";
-import { NotificationController } from "./modules/notification/presentation/controllers";
+import { NotificationModule } from "@/modules/notification";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
@@ -53,7 +53,7 @@ const app = new Elysia()
   .use(BusinessModule)
   .use(AdminModule)
   .use(MaterialsModule)
-  .use(NotificationController)
+  .use(NotificationModule)
   .get("/health", () => ({ status: "ok", runtime: "bun" }), { detail: { tags: ["General"] } })
   .listen(3000);
 

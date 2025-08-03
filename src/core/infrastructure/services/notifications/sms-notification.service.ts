@@ -1,12 +1,19 @@
 
+import { NotificationPort, Notification } from '@/core/infrastructure/services/notifications/types';
 import { Twilio } from 'twilio';
-import { Notification, NotificationPort } from '../../domain/model';
 
 const client = new Twilio(process.env.TWILIO_SID!, process.env.TWILIO_TOKEN!);
 
-export class SMSAppNotificationAdapter implements NotificationPort {
-  supports(channel: string) {
-    return channel === 'sms';
+export class SMSNotificationService implements NotificationPort {
+  private static instance: SMSNotificationService;
+
+  private constructor() {}
+
+  static getInstance() {
+    if (!SMSNotificationService.instance) {
+      SMSNotificationService.instance = new SMSNotificationService();
+    }
+    return SMSNotificationService.instance;
   }
 
   async send({ to, message }: Notification) {
