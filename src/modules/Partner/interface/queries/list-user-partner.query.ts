@@ -1,6 +1,5 @@
-import { UserRoleEnum, UserRoleEnumWithoutAdminAndFournisseurAndClient } from './../../../../core/enums/enums';
+import { NON_ADMIN_NON_SUPPLIER_ROLES } from './../../../../core/enums/enums';
 import { BaseQuery, CommandProps, BaseQueryHandler } from "@/core/base/classes";
-import { UserRoleEnumWithoutAdminAndFournisseur } from "@/core/enums/enums";
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { SelectQueryBuilder } from 'typeorm';
@@ -33,7 +32,7 @@ export class ListUserPartnerQueryHandler extends BaseQueryHandler<ListUserPartne
 
     let list = await this.getPartnerUserByRole({
       companyId: query.companyId,
-      roles: query.params.roles.length > 0 ? query.params.roles : UserRoleEnumWithoutAdminAndFournisseurAndClient
+      roles: query.params.roles.length > 0 ? query.params.roles : NON_ADMIN_NON_SUPPLIER_ROLES
     },
       {
         limite: (query.params.limite as number) || 10,

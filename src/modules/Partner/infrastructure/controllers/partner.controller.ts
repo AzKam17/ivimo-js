@@ -1,4 +1,3 @@
-import { UserRoleEnumWithoutAdminAndFournisseur } from './../../../../core/enums/enums';
 import { EditUserPartnerQueryHandler } from './../../interface/commands/edit-user-partner.command';
 import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
@@ -9,8 +8,7 @@ import { UserResponse } from "@/modules/auth/interface/user-http.response";
 import { ActiveUserPartnerQuery, ActiveUserPartnerQueryHandler, CreateUserPartnerCommand, CreateUserPartnerCommandHandler, DiseableUserPartnerQuery, DiseableUserPartnerQueryHandler, EditUserPartnerQuery } from "../../interface/commands";
 import { CreateUserPartenaireDto, EditUserPartenaireDto } from "../../interface/dtos";
 import { ListUserPartnerQuery, ListUserPartnerQueryHandler } from "../../interface/queries/list-user-partner.query";
-import { UserRoleEnum } from '@/core/enums/enums';
-import { Property } from '@/modules/property/infrastructure/entities';
+import { NON_ADMIN_NON_SUPPLIER_ROLES, UserRoleEnum, UserRoleWithoutAdminAndFournisseur } from '@/core/enums/enums';
 
 export const PartnerController = new Elysia()
   .use(({ decorator }) => {
@@ -30,7 +28,7 @@ export const PartnerController = new Elysia()
   .use(AuthRoutesPlugin)
   .get(
     routes.partner_auth.list,
-    async ({ queryMediator, user, query }: { queryMediator: QueryMediator, user: User, query: { roles: typeof UserRoleEnumWithoutAdminAndFournisseur, limit: number, page: number } }) => {
+    async ({ queryMediator, user, query }: { queryMediator: QueryMediator, user: User, query: { roles: UserRoleWithoutAdminAndFournisseur, limit: number, page: number } }) => {
       /**
        * Liste des utilisateur doit tenir compte du business_id, createBy
        */
@@ -53,7 +51,7 @@ export const PartnerController = new Elysia()
             required: false,
             schema: {
               type: 'string',
-              enum: Object.values(UserRoleEnumWithoutAdminAndFournisseur)
+              enum: NON_ADMIN_NON_SUPPLIER_ROLES
             }
           },
           {
