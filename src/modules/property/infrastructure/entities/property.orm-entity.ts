@@ -52,6 +52,9 @@ export class Property extends BaseEntity {
   @Column({ name: "extras", type: "json" })
   extras: Metadata;
 
+  @Column({ name: "company_id", type: "varchar", nullable: true })
+  companyId?: string;
+
   static create(props: Partial<Property>): Property {
     const property = new Property();
     Object.assign(property, props);

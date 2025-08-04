@@ -10,6 +10,7 @@ import { ActiveUserPartnerQuery, ActiveUserPartnerQueryHandler, CreateUserPartne
 import { CreateUserPartenaireDto, EditUserPartenaireDto } from "../../interface/dtos";
 import { ListUserPartnerQuery, ListUserPartnerQueryHandler } from "../../interface/queries/list-user-partner.query";
 import { UserRoleEnum } from '@/core/enums/enums';
+import { Property } from '@/modules/property/infrastructure/entities';
 
 export const PartnerController = new Elysia()
   .use(({ decorator }) => {
@@ -90,7 +91,7 @@ export const PartnerController = new Elysia()
           createBy: user.id
         })
       );
-      return new UserResponse(result);
+      return new UserResponse({...result});
     },
     newFunction({ body: CreateUserPartenaireDto, reponse: UserResponse, detail: { summary: "Sign in - Create new User Partner" } })
   )

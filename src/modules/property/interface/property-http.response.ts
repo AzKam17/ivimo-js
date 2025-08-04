@@ -39,6 +39,7 @@ interface PropertyResponseProps {
   owned_by?: string;
   created_at: string;
   updated_at: string;
+  companyId: string;
   is_bookmarked?: boolean;
   extras: any
 }
@@ -70,6 +71,7 @@ export class PropertyResponse {
       },
       created_at: props.createdAt.toISOString(),
       updated_at: props.updatedAt.toISOString(),
+      companyId: props.companyId  ?? ""
     };
     return response;
   }

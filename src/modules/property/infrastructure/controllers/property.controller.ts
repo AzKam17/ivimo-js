@@ -20,6 +20,8 @@ import {
   GetPropertyQueryHandler,
   GetRecommendedPropertyQuery,
   GetRecommendedPropertyQueryHandler,
+  ListPropertyByCompagnyQueryHandler,
+  ListPropertyQuery,
   SearchPropertyQuery,
   SearchPropertyQueryHandler,
 } from "@/modules/property/interface/queries";
@@ -52,6 +54,7 @@ export const PropertyController = new Elysia()
       const property: Property = await commandMediator.send(
         new CreatePropertyCommand({
           ...body,
+          companyId: user?.companyId,
           createdBy: user?.id,
         })
       );
@@ -157,49 +160,49 @@ export const PropertyController = new Elysia()
       last_page: result.last_page
     };
   },
-  {
-    detail: {
-      summary: "Get featured properties by type",
-      description: "Returns a paginated list of featured properties filtered by property type and ordered by view count",
-      tags: ["Property"],
-      parameters: [
-        {
-          name: "type",
-          in: 'query',
-          description: "Property type to filter by (LAND, APPARTEMENT, VILLA, RESIDENCE)",
-          required: true,
-          schema: {
-            type: 'string'
+    {
+      detail: {
+        summary: "Get featured properties by type",
+        description: "Returns a paginated list of featured properties filtered by property type and ordered by view count",
+        tags: ["Property"],
+        parameters: [
+          {
+            name: "type",
+            in: 'query',
+            description: "Property type to filter by (LAND, APPARTEMENT, VILLA, RESIDENCE)",
+            required: true,
+            schema: {
+              type: 'string'
+            }
+          },
+          {
+            name: "page",
+            in: 'query',
+            description: "Page number for pagination (starts at 1)",
+            required: false,
+            schema: {
+              type: "number",
+              default: 1
+            }
+          },
+          {
+            name: "limit",
+            in: 'query',
+            description: "Number of items per page",
+            required: false,
+            schema: {
+              type: "number",
+              default: 10
+            }
           }
-        },
-        {
-          name: "page",
-          in: 'query',
-          description: "Page number for pagination (starts at 1)",
-          required: false,
-          schema: {
-            type: "number",
-            default: 1
-          }
-        },
-        {
-          name: "limit",
-          in: 'query',
-          description: "Number of items per page",
-          required: false,
-          schema: {
-            type: "number",
-            default: 10
-          }
-        }
-      ]
+        ]
+      }
     }
-  }
-)
+  )
   .get(
     routes.property.search,
     async ({ queryMediator, query }: { queryMediator: QueryMediator; query: any }) => {
-      const result : PaginatedResponse<Property> = await queryMediator.send(new SearchPropertyQuery({ query }));
+      const result: PaginatedResponse<Property> = await queryMediator.send(new SearchPropertyQuery({ query }));
 
       return {
         items: result.items.map((e) => new PropertyResponse({ ...e })),
@@ -265,4 +268,3 @@ export const PropertyController = new Elysia()
     }
   )
   ;
-  

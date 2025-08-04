@@ -11,7 +11,11 @@ export const routes = {
     },
     property_auth: {
         root: `${routePathAuth}/`,
+        active: `${routePathAuth}/active/:id`,
+        diseable: `${routePathAuth}/diseable/:id`,
         detail: `${routePathAuth}/:id`,
+        detailByCompany: `${routePathAuth}/:id/company/:compadId`,
         bookmark: `${routePathAuth}/bookmark/:id`,
+        company: `${routePathAuth}/company`,
     }
   }

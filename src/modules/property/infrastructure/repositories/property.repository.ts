@@ -226,4 +226,13 @@ export class PropertyRepository extends BaseRepository<Property> {
       where: whereClause as unknown as FindOptionsWhere<Property>,
     });
   }
+
+
+  public async findByIdAndCompanyId (id: string, companyId: string) {
+    return await this.repository.findOneBy({
+      id,
+      companyId,
+    })
+  }
+
 }

@@ -3,6 +3,7 @@ import { Property } from "@/modules/property/infrastructure/entities";
 import { PropertyTypesenseService } from "@/modules/property/infrastructure/services/property-typesense.service";
 import { SearchParams } from "typesense/lib/Typesense/Documents";
 import { PaginatedResponse } from "@/core/base/responses";
+import { PropertyRepository } from "../../infrastructure/repositories";
 
 export class SearchPropertyQuery extends BaseQuery {
   query: any;

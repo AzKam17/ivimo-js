@@ -60,6 +60,7 @@ export class BaseRepository<T extends BaseEntity> {
     });
   }
 
+
   public async findOneBy(where: Partial<T>): Promise<T | null> {
     return this.repository.findOne({
       where: {
@@ -106,15 +107,17 @@ export class BaseRepository<T extends BaseEntity> {
   }
 
   public async findAllManyWithPagination(
-    where: Partial<T>,
-    page: number = 1,
-    limit: number = 10
-  ): Promise<{ data: T[]; total: number; page: number; pageCount: number }> {
+    dataRequest: {
+      where: Partial<T>,
+      page?: number,
+      limit?: number}): Promise<{ item: T[]; total: number; limit: number;  page: number; pageCount?: number }> {
+    const page = dataRequest.page || 1;
+    const limit = dataRequest.limit || 10;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.repository.findAndCount({
       where: {
-        ...where,
+         ...dataRequest.where,
         deletedAt: null,
       } as FindOptionsWhere<T>,
       skip,
@@ -122,8 +125,9 @@ export class BaseRepository<T extends BaseEntity> {
     });
 
     return {
-      data,
+      item: data,
       total,
+      limit,
       page,
       pageCount: Math.ceil(total / limit),
     };
