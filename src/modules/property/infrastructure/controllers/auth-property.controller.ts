@@ -70,7 +70,6 @@ export const AuthPropertyController = new Elysia()
     {
       detail: {
         summary: "Get my properties",
-        consumes: ["multipart/form-data"],
         tags: ["Property"],
       },
     }

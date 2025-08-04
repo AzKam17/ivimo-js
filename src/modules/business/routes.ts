@@ -14,5 +14,6 @@ export const routes = {
   },
   appointment: {
     root: `api/v1/appointment`,
+    detail: `api/v1/appointment/:id`,
   }
 };

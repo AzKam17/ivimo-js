@@ -18,8 +18,29 @@ export enum UserRoleEnum {
 
 export type UserRoleEnumWithoutAdmin = Exclude<UserRoleEnum, UserRoleEnum.ADMIN>
 
-export const UserRoleEnumWithoutAdminAndFournisseurAndClient = Object.values(UserRoleEnum).filter(item => item !== UserRoleEnum.FOURNISSEUR && item !== UserRoleEnum.ADMIN && item !== UserRoleEnum.CLIENT)
-export const UserRoleEnumWithoutAdminAndFournisseur = Object.values(UserRoleEnum).filter(item => item !== UserRoleEnum.FOURNISSEUR && item !== UserRoleEnum.ADMIN)
+export type UserRoleWithoutAdminAndFournisseur = Exclude<UserRoleEnum, UserRoleEnum.ADMIN | UserRoleEnum.FOURNISSEUR>
+export type UserRoleWithoutAdminFournisseurAndClient = Exclude<UserRoleEnum, UserRoleEnum.ADMIN | UserRoleEnum.FOURNISSEUR | UserRoleEnum.CLIENT>
+
+export const OPERATIONAL_USER_ROLES = Object.values(UserRoleEnum).filter(
+  role => ![
+    UserRoleEnum.ADMIN,
+    UserRoleEnum.FOURNISSEUR,
+    UserRoleEnum.CLIENT
+  ].includes(role)
+)
+
+export const NON_ADMIN_NON_SUPPLIER_ROLES = Object.values(UserRoleEnum).filter(
+  role => ![
+    UserRoleEnum.ADMIN,
+    UserRoleEnum.FOURNISSEUR
+  ].includes(role)
+)
+
+export enum AppointmentStatus {
+  DONE = "done",
+  PENDING = "pending",
+  PAST = "past",
+}
 
 // export namespace PropertyAdTypeEnum {
 //   export function from(value: string): PropertyAdTypeEnum {

@@ -1,3 +1,4 @@
+import { AppointmentStatus } from "@/core/enums/enums";
 import { BaseEntity } from "@/core/infrastructure/entities/BaseEntity";
 import type { Metadata } from "@/core/types";
 import { Column, Entity } from "typeorm";
@@ -12,6 +13,9 @@ export class Appointment extends BaseEntity {
 
   @Column("varchar", { name: "is_all_day", nullable: true })
   isAllDay: boolean;
+
+  @Column({ name: "status", type: "enum", enum: AppointmentStatus, default: AppointmentStatus.PENDING })
+  status: AppointmentStatus;
 
   @Column("varchar", { name: "is_done", default: false })
   is_done: boolean;
