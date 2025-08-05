@@ -1,3 +1,4 @@
+
 export enum PropertyAdTypeEnum {
   SALE = "sale",
   RENT = "rent",
@@ -40,6 +41,24 @@ export enum AppointmentStatus {
   DONE = "done",
   PENDING = "pending",
   PAST = "past",
+}
+
+export enum AnnouncementStatus {
+  EXPIRED = "expired",
+  VALID = "valid",
+  PAUSE = "pause",
+}
+
+export enum AnnouncementType {
+  VIP= "vip",
+  SPONSOR = "sponsor",
+  NOVIP = "novip"
+}
+
+export enum AnnouncementTarget {
+  ALL= "vip",
+  BUYER = "buyer",
+  INVESTITOR = "investor",
 }
 
 // export namespace PropertyAdTypeEnum {
