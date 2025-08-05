@@ -18,6 +18,7 @@ export class CreatePropertyCommand extends BaseCommand {
   images?: File[];
   extras?: Record<string, any>;
   createdBy?: string;
+  companyId?: string;
 
   constructor(props: CommandProps<CreatePropertyCommand>) {
     super(props);
@@ -32,6 +33,7 @@ export class CreatePropertyCommand extends BaseCommand {
     this.images = props.images;
     this.extras = props.extras;
     this.createdBy = props.createdBy;
+    this.companyId = props.companyId;
   }
 }
 
@@ -59,6 +61,7 @@ export class CreatePropertyCommandHandler extends BaseCommandHandler<CreatePrope
       images,
       // @ts-ignore
       geolocation: command.geolocation,
+      companyId: command.companyId
     });
 
     const savedProperty = await repository.create(property);

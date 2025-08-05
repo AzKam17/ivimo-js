@@ -17,8 +17,6 @@ interface UserResponseProps {
   email: string;
   phone_number: string;
   role: string;
-  isActive: boolean;
-  companyId: string;
   extras: any;
 }
 
@@ -31,8 +29,6 @@ export class UserResponse {
       email: props.email,
       phone_number: props.phone_number, 
       role: props.role,
-      isActive: props.isActive,
-      companyId: props.companyId,
       extras: props.extras
     }
   }

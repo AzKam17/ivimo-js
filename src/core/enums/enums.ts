@@ -18,6 +18,24 @@ export enum UserRoleEnum {
 
 export type UserRoleEnumWithoutAdmin = Exclude<UserRoleEnum, UserRoleEnum.ADMIN>
 
+export type UserRoleWithoutAdminAndFournisseur = Exclude<UserRoleEnum, UserRoleEnum.ADMIN | UserRoleEnum.FOURNISSEUR>
+export type UserRoleWithoutAdminFournisseurAndClient = Exclude<UserRoleEnum, UserRoleEnum.ADMIN | UserRoleEnum.FOURNISSEUR | UserRoleEnum.CLIENT>
+
+export const OPERATIONAL_USER_ROLES = Object.values(UserRoleEnum).filter(
+  role => ![
+    UserRoleEnum.ADMIN,
+    UserRoleEnum.FOURNISSEUR,
+    UserRoleEnum.CLIENT
+  ].includes(role)
+)
+
+export const NON_ADMIN_NON_SUPPLIER_ROLES = Object.values(UserRoleEnum).filter(
+  role => ![
+    UserRoleEnum.ADMIN,
+    UserRoleEnum.FOURNISSEUR
+  ].includes(role)
+)
+
 export enum AppointmentStatus {
   DONE = "done",
   PENDING = "pending",

@@ -71,4 +71,5 @@ export class UserRepository extends BaseRepository<User> {
       where: whereClause,
     });
   }
+
 }

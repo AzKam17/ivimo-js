@@ -2,18 +2,18 @@ import { BaseCommand, BaseCommandHandler, CommandProps } from "@/core/base/class
 import { User } from "@/modules/auth/infrastructure/entities";
 import { UserRepository } from "@/modules/auth/infrastructure/repositories/user.repository";
 import { BaseError } from "@/core/base/errors";
-import { UserRoleEnum } from "@/core/enums/enums";
+import { UserRoleEnum} from "@/core/enums/enums";
 import { Guard } from "@/core/utils";
+import { Metadata } from "@/core/types";
+import { CreateUserCommand } from "@/modules/auth/interface/commands";
 
-export class CreateUserCommand extends BaseCommand {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone_number: string;
-  password: string;
-  role?: UserRoleEnum;
+export class CreateUserPartnerCommand extends CreateUserCommand {
+  companyId: string;
+  createBy: string;
+  extras: Metadata;
+  role?: any;
 
-  constructor(props: CommandProps<CreateUserCommand>) {
+  constructor(props: CommandProps<CreateUserPartnerCommand>) {
     super(props);
     this.first_name = props.first_name;
     this.last_name = props.last_name;
@@ -21,13 +21,16 @@ export class CreateUserCommand extends BaseCommand {
     this.phone_number = props.phone_number;
     this.password = props.password;
     this.role = props.role;
+    this.companyId = props.companyId;
+    this.createBy = props.createBy;
+    this.extras = props.extras
   }
 }
 
-export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCommand, User> {
+export class CreateUserPartnerCommandHandler implements BaseCommandHandler<CreateUserPartnerCommand, User> {
   constructor() {}
 
-  async execute(query: CreateUserCommand): Promise<User> {
+  async execute(query: CreateUserPartnerCommand): Promise<User> {
     const repository = UserRepository.getInstance();
 
     const userExists = await repository.exists({
@@ -49,6 +52,9 @@ export class CreateUserCommandHandler implements BaseCommandHandler<CreateUserCo
         last_name: query.last_name,
         email: query.email,
         phone_number: query.phone_number,
+        companyId: query.companyId,
+        createdBy: query.createBy,
+        extras: query?.extras,
         password: await Bun.password.hash(query.password),
         ...role
       })

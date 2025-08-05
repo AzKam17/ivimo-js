@@ -48,6 +48,8 @@ export class GenerateAuthTokenCommandHandler extends BaseCommandHandler<
       first_name: user.first_name,
       last_name: user.last_name,
       phone_number: user.phone_number,
+      companyId: user.companyId,
+      extras: user.extras, // recuperation des informations supplementaire sur l'utilisateur en cours (exemple: Business id)
     });
 
     return { token, user };
