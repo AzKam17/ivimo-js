@@ -129,7 +129,7 @@ export const AuthController = new Elysia()
       const result: User = await commandMediator.send(
         new EditUserCommand({
           ...body,
-          role: undefined,
+          role: body?.role ?? undefined,
           id: user.id,
         })
       );
