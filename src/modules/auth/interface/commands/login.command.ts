@@ -25,12 +25,9 @@ export class LoginCommandHandler extends BaseCommandHandler<LoginCommand, boolea
   async execute(command: LoginCommand): Promise<boolean> {
     const repository = UserRepository.getInstance();
 
-    console.log('user => ', command)
     const user = await repository.findOneBy({
       phone_number: command.phone_number,
     });
-
-    console.log('user exist => => ', user)
 
     if (user) {
       const isPasswordValid = await Bun.password.verify(command.password, user.password);

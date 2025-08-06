@@ -8,7 +8,7 @@ import { UserResponse } from "@/modules/auth/interface/user-http.response";
 import { ActiveUserPartnerQuery, ActiveUserPartnerQueryHandler, CreateUserPartnerCommand, CreateUserPartnerCommandHandler, DiseableUserPartnerQuery, DiseableUserPartnerQueryHandler, EditUserPartnerQuery } from "../../interface/commands";
 import { CreateUserPartenaireDto, EditUserPartenaireDto } from "../../interface/dtos";
 import { ListUserPartnerQuery, ListUserPartnerQueryHandler } from "../../interface/queries/list-user-partner.query";
-import { NON_ADMIN_NON_SUPPLIER_ROLES, UserRoleEnum, UserRoleWithoutAdminAndFournisseur } from '@/core/enums/enums';
+import { NON_ADMIN_NON_SUPPLIER_ROLES, UserRoleWithoutAdminAndFournisseur } from '@/core/enums/enums';
 
 export const PartnerController = new Elysia()
   .use(({ decorator }) => {

@@ -54,7 +54,7 @@ export class BaseRepository<T extends BaseEntity> {
     return this.repository.findOne({
       where: {
         id,
-        isActive: true,
+        // isActive: true,
         deletedAt: null,
       } as unknown as FindOptionsWhere<T>,
     });

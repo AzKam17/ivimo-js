@@ -16,26 +16,26 @@ export class AnnouncementRepository extends BaseRepository<Announcement> {
     return AnnouncementRepository.instance;
   }
 
-  public async findAllByPaginate(params: { data: Announcement, page?: number, limit?: number }): Promise<{ item: Announcement[]; total: number; limit: number; page: number; pageCount?: number }> {
-
+  public async findAllByPaginate(params: { companyId: string , page?: number, limit?: number }): Promise<{ item: Announcement[]; total: number; limit: number; page: number; pageCount?: number }> {
     return await AnnouncementRepository.getInstance().findAllManyWithPagination({
-      where: { companyId: params.data.companyId },
-      page: params.page,
-      limit: params.limit
+      where: { companyId: params.companyId },
+      page: params?.page,
+      limit: params?.limit
     });
 
   }
 
   public async activeAnnouncement(id: string): Promise<Announcement> {
     const repository = AnnouncementRepository.getInstance();
+    console.log('active id announcement => ', id);
 
     const announcement = await this.findAnnouncement(repository, id);
-
     announcement.isActive = true;
+    console.log('active announcement => ', announcement);
 
-    const updatedAnnouncement = await this.updateAnnouncement(repository, announcement);
+    const updatedAnnouncement = await this.updateAnnounce(repository, announcement);
 
-    return updatedAnnouncement;
+    return announcement;
 
   }
 
@@ -43,23 +43,47 @@ export class AnnouncementRepository extends BaseRepository<Announcement> {
     const repository = AnnouncementRepository.getInstance();
 
     const announcement = await this.findAnnouncement(repository, id);
-
     announcement.isActive = false;
 
-    const updatedAnnouncement = await this.updateAnnouncement(repository, announcement);
+    console.log('diseable announcement => ', announcement)
+
+    const updatedAnnouncement = await this.updateAnnounce(repository, announcement);
 
     return updatedAnnouncement;
   }
 
-  public async updateAnnouncement(announcement: Announcement): Promise<any> {
+  public async createAnnouncement (data: Announcement):Promise<Announcement> {
+    const announcement: Announcement = Announcement.create(data);
+    console.log('repo announ :=> ', announcement)
+    return await AnnouncementRepository.getInstance().save(announcement);
+  }
+
+  public async updateAnnouncement(announcement: Announcement): Promise<Announcement> {
     const repository = AnnouncementRepository.getInstance();
 
-    const announcementFind = this.findAnnouncement(repository, announcement)
+    const announcementUpdate = await this.findAnnouncement(repository, announcement.id);
+
+    // Met à jour toutes les propriétés sauf id et champs système
+    announcementUpdate.title = announcement.title ?? announcementUpdate.title;
+    announcementUpdate.description = announcement.description ?? announcementUpdate.description;
+    announcementUpdate.status = announcement.status ?? announcementUpdate.status;
+    announcementUpdate.type = announcement.type ?? announcementUpdate.type;
+    announcementUpdate.target = announcement.target ?? announcementUpdate.target;
+    announcementUpdate.price = announcement.price ?? announcementUpdate.price;
+    announcementUpdate.expiryDate = announcement.expiryDate ?? announcementUpdate.expiryDate;
+    announcementUpdate.companyId = announcement.companyId ?? announcementUpdate.companyId;
+    announcementUpdate.createdBy = announcement.createdBy ?? announcementUpdate.createdBy;
+    announcementUpdate.propertyId = announcement.propertyId ?? announcementUpdate.propertyId;
+    // Les champs système (id, createdAt, updatedAt, deletedAt, isActive) ne sont pas écrasés ici
+
+    return await this.updateAnnounce(repository, announcementUpdate)
 
   }
 
-  private async updateAnnouncement(repository: AnnouncementRepository, announcement: Announcement) {
-    const updatedAnnouncement = await repository.update(announcement.id, announcement);
+  public async updateAnnounce(repository: AnnouncementRepository, announcement: Announcement) {
+    const updatedAnnouncement = await repository.save(announcement);
+
+    console.log(updatedAnnouncement)
 
     if (!updatedAnnouncement) {
       throw new BaseError({
@@ -70,7 +94,7 @@ export class AnnouncementRepository extends BaseRepository<Announcement> {
     return updatedAnnouncement;
   }
 
-  private async findAnnouncement(repository: AnnouncementRepository, id: string) {
+  public async findAnnouncement(repository: AnnouncementRepository, id: string) {
     const announcement = await repository.findOneByWhithoutParamIsActive({ id }, true);
 
     if (!announcement) {
@@ -80,6 +104,13 @@ export class AnnouncementRepository extends BaseRepository<Announcement> {
       });
     }
     return announcement;
+  }
+
+  public async delectAnnouncement (id: string) {
+    const repository = AnnouncementRepository.getInstance();
+    const announcement = await this.findAnnouncement(repository, id);
+
+    return await repository.delete(id);
   }
 
 }

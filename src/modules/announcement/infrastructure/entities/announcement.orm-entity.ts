@@ -35,8 +35,8 @@ export class Announcement extends BaseEntity {
     propertyId: string;
 
     static create(props: Partial<Announcement>): Announcement {
-        const agent = new Announcement();
-        Object.assign(agent, props);
-        return agent;
+        const a= new Announcement();
+        Object.assign(a, props);
+        return a;
     }
 }

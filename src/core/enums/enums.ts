@@ -56,7 +56,7 @@ export enum AnnouncementType {
 }
 
 export enum AnnouncementTarget {
-  ALL= "vip",
+  ALL= "all",
   BUYER = "buyer",
   INVESTITOR = "investor",
 }
