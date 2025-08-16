@@ -45,18 +45,24 @@ export class CreateMaterialCommandHandler extends BaseCommandHandler<CreateMater
       });
     }
 
-    const images = command.images
-      ? await Promise.all(command.images.map((image) => fileUtility.uploadFile(image)))
-      : [];
+    const images = Array.isArray(command.images) ? command.images : [command.images];
+
+    let imageUrls: string[] = [];
+    if (!!images) {
+      imageUrls = command.images
+        ? await Promise.all(images.filter((image) => !!image).map((image) => fileUtility.uploadFile(image)))
+        : [];
+    }
 
     // Create the material
     const material = Materials.create({
-      images,
+      images: imageUrls,
       name: command.name,
       price: typeof command.price === "string" ? parseFloat(command.price) : command.price,
       description: command.description,
       has_stock: command.has_stock,
-      quantity_in_stock: typeof command.quantity_in_stock === "string" ? parseInt(command.quantity_in_stock) : command.quantity_in_stock,
+      quantity_in_stock:
+        typeof command.quantity_in_stock === "string" ? parseInt(command.quantity_in_stock) : command.quantity_in_stock,
       supplier_id: command.supplier_id,
       category_slug: command.category_slug,
       extras: command.extras,
