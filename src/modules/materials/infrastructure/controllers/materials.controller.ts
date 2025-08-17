@@ -1,6 +1,7 @@
 import { PaginatedResponse } from "@/core/base/responses";
+import { Guard } from "@/core/utils";
 import { User } from "@/modules/auth/infrastructure/entities";
-import { AuthRoutesPlugin } from "@/modules/auth/plugins";
+import { AuthRoutesPlugin, OptionalAuthPlugin } from "@/modules/auth/plugins";
 import { Materials, MaterialsCategory } from "@/modules/materials/infrastructure/entities";
 import { rejectNonSupplierUser } from "@/modules/materials/infrastructure/services/misc";
 import {
@@ -69,10 +70,15 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
       },
     }
   )
+  .use(OptionalAuthPlugin)
   .get(
     routes.materials.search,
-    async ({ queryMediator, query }: { queryMediator: QueryMediator; query: any }) => {
-      const result: PaginatedResponse<Materials> = await queryMediator.send(new SearchMaterialsQuery({ query }));
+    async ({ user, queryMediator, query, headers }: { user: User | null; queryMediator: QueryMediator; query: any, headers: any }) => {
+      const result: PaginatedResponse<Materials> = await queryMediator.send(new SearchMaterialsQuery({ 
+        query, 
+        supplier_id: user?.id,
+        is_private: !Guard.isEmpty(headers["x-filter-private"]),
+       }));
 
       return {
         items: result.items.map((e) => new MaterialsResponse({ ...e })),
@@ -275,7 +281,9 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
       },
     }
   )
-  .delete(routes.materials.delete, async ({
+  .delete(
+    routes.materials.delete,
+    async ({
       user,
       params: { id },
       commandMediator,

@@ -39,7 +39,7 @@ export class MemberAbilityFactory {
     can('add', Materials);
     can('remove', Materials, { supplier_id: user.id });
     can('update', Materials, { supplier_id: user.id });
-    can('read', Materials, { supplier_id: user.id });
+    can('read', Materials);
     return build();
   }
 }

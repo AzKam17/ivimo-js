@@ -1,4 +1,4 @@
-import { Repository, DataSource, FindOptionsWhere, DeepPartial, Or, FindManyOptions, In } from "typeorm";
+import { Repository, DataSource, FindOptionsWhere, DeepPartial, Or, FindManyOptions, In, ILike } from "typeorm";
 import { AppDataSource } from "@/modules/config";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
@@ -231,5 +231,48 @@ export class BaseRepository<T extends BaseEntity> {
     return this.repository.find({
       where: whereConditions, // Use array directly instead of Or(...whereConditions)
     });
+  }
+
+  /**
+   * Search entities using case-insensitive pattern matching with ILIKE across multiple fields
+   * @param fields Array of fields to search in
+   * @param searchTerm The search term to match
+   * @param page Page number for pagination
+   * @param limit Number of items per page
+   * @param additionalConditions Additional conditions to apply to the search query
+   * @returns Paginated results matching the search term and conditions
+   */
+  public async searchByILIKE(
+    fields: (keyof T)[],
+    searchTerm: string,
+    page: number = 1,
+    limit: number = 10,
+    additionalConditions: FindOptionsWhere<T> = {}
+  ): Promise<{ data: T[]; total: number; page: number; pageCount: number }> {
+    const skip = (page - 1) * limit;
+    
+    // Create an array of conditions for each field
+    const conditions = fields.map(field => {
+      const condition: any = {
+        isActive: true,
+        deletedAt: null,
+        ...additionalConditions // Merge additional conditions
+      };
+      condition[field] = ILike(`%${searchTerm}%`);
+      return condition;
+    });
+    
+    const [data, total] = await this.repository.findAndCount({
+      where: conditions, // TypeORM will treat this as OR conditions
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      total,
+      page,
+      pageCount: Math.ceil(total / limit),
+    };
   }
 }
