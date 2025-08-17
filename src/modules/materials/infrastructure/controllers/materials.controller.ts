@@ -4,6 +4,7 @@ import { AuthRoutesPlugin } from "@/modules/auth/plugins";
 import { Materials, MaterialsCategory } from "@/modules/materials/infrastructure/entities";
 import { rejectNonSupplierUser } from "@/modules/materials/infrastructure/services/misc";
 import { CreateMaterialCommand, CreateMaterialCommandHandler, UpdateMaterialCommand, UpdateMaterialCommandHandler } from "@/modules/materials/interface/commands";
+import { HideMaterialCommand, HideMaterialCommandHandler } from "@/modules/materials/interface/commands/hide-material.command";
 import { CreateMaterialDto, UpdateMaterialDto } from "@/modules/materials/interface/dtos";
 import {
   GetMaterialsCategoryQuery,
@@ -36,6 +37,7 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
       commands: [
         [CreateMaterialCommand, new CreateMaterialCommandHandler()],
         [UpdateMaterialCommand, new UpdateMaterialCommandHandler()],
+        [HideMaterialCommand, new HideMaterialCommandHandler()],
       ],
     });
   })
@@ -203,6 +205,31 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
             name: "id",
             in: 'path',
             description: "ID of the material to update",
+            required: true,
+            schema: {
+              type: 'string'
+            }
+          },
+        ]
+      },
+  })
+  .post(routes.materials.hide, async({ user, params: { id }, commandMediator }: { user: User, params: { id: string }; commandMediator: CommandMediator }) => {
+    await commandMediator.send(
+      new HideMaterialCommand({
+        id,
+        supplier_id: user.id,
+      })
+    );
+  }, {
+      detail: {
+        tags: ["Materials"],
+        summary: "Hide material",
+        description: "Hide an existing material by id",
+        parameters: [
+          {
+            name: "id",
+            in: 'path',
+            description: "ID of the material to hide",
             required: true,
             schema: {
               type: 'string'

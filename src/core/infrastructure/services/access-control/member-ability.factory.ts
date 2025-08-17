@@ -20,11 +20,11 @@ export class MemberAbilityFactory {
     return MemberAbilityFactory.instance;
   }
 
-  async getAbilities(user: User) {
+  async getAbilities(user: User): Promise<AppAbility> {
     switch (user.role) {
       case UserRoleEnum.FOURNISSEUR:
         return this.setFournisseurAbilities(user);
-      case UserRoleEnum.CLIENT:
+      default:
         return this.setFournisseurAbilities(user);
     }
   }

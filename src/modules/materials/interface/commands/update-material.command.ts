@@ -46,7 +46,7 @@ export class UpdateMaterialCommandHandler extends BaseCommandHandler<UpdateMater
     const material = await repository.findOneBy({ id: command.id }, true);
 
     const ability = await MemberAbilityFactory.getInstance().getAbilities(user);
-    if (ability?.cannot("update", material)) {
+    if (ability.cannot("update", material)) {
       throw new BaseError({
         statusCode: 403,
         message: "You do not have permission to update this material",
