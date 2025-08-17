@@ -5,6 +5,8 @@ export class BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
     
+    @Column({type: 'boolean', default: true, name: 'is_visible' })
+    isVisible: boolean;
     @Column('boolean', { name: 'is_active' })
     isActive: boolean;
     @Column('timestamp', { name: 'created_at' })
@@ -16,6 +18,7 @@ export class BaseEntity {
 
     constructor() {
         this.id = uuidV4();
+        this.isVisible = true;
         this.isActive = true;
         this.createdAt = new Date();
         this.updatedAt = new Date();
