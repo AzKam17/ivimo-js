@@ -73,3 +73,18 @@ export enum AnnouncementTarget {
 //     }
 //   }
 // }
+
+export enum PaymentMethod {
+  VISA = "visa",
+  ORANGE_CI = "orange_money_ci",
+  MOOV_CI = "moov_ci",
+  MTN_CI = "mtn_ci",
+  WAVE_CI = "wave_ci",
+}
+
+export enum MaterialOrderStatus {
+  PENDING = "pending",
+  DONE = "done",
+  CANCELLED = "cancelled",
+  SHIPPED = "shipped",
+}

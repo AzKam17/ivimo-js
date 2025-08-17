@@ -13,6 +13,7 @@ import cors from "@elysiajs/cors";
 import { PartnerModule } from "./modules/Partner";
 import { NotificationModule } from "@/modules/notification";
 import { AnnouncementModule } from "./modules/announcement";
+import { BillingModule } from "@/modules/billing";
 
 AppDataSource.initialize().then(async () => console.log("🗃️ Database connected with Bun"));
 
@@ -35,6 +36,7 @@ const app = new Elysia()
           { name: "Admin", description: "Admin endpoints" },
           { name: "Materials", description: "Materials endpoints" },
           { name: "Notification", description: "Notification endpoints" },
+          { name: "Billing", description: "Payment, billing, facturation endpoints" },
         ],
         components: {
           securitySchemes: {
@@ -57,6 +59,7 @@ const app = new Elysia()
   .use(AnnouncementModule)
   .use(AdminModule)
   .use(MaterialsModule)
+  .use(BillingModule)
   .use(NotificationModule)
   .get("/health", () => ({ status: "ok", runtime: "bun" }), { detail: { tags: ["General"] } })
   .listen(3000);
