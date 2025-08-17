@@ -6,6 +6,8 @@ import { rejectNonSupplierUser } from "@/modules/materials/infrastructure/servic
 import {
   CreateMaterialCommand,
   CreateMaterialCommandHandler,
+  DeleteMaterialCommand,
+  DeleteMaterialCommandHandler,
   UpdateMaterialCommand,
   UpdateMaterialCommandHandler,
 } from "@/modules/materials/interface/commands";
@@ -46,6 +48,7 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         [CreateMaterialCommand, new CreateMaterialCommandHandler()],
         [UpdateMaterialCommand, new UpdateMaterialCommandHandler()],
         [HideMaterialCommand, new HideMaterialCommandHandler()],
+        [DeleteMaterialCommand, new DeleteMaterialCommandHandler()],
       ],
     });
   })
@@ -263,6 +266,41 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
             name: "id",
             in: "path",
             description: "ID of the material to hide",
+            required: true,
+            schema: {
+              type: "string",
+            },
+          },
+        ],
+      },
+    }
+  )
+  .delete(routes.materials.delete, async ({
+      user,
+      params: { id },
+      commandMediator,
+    }: {
+      user: User;
+      params: { id: string };
+      commandMediator: CommandMediator;
+    }) => {
+      await commandMediator.send(
+        new DeleteMaterialCommand({
+          id,
+          supplier_id: user.id,
+        })
+      );
+    },
+    {
+      detail: {
+        tags: ["Materials"],
+        summary: "Delete material",
+        description: "Delete an existing material by id",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            description: "ID of the material to delete",
             required: true,
             schema: {
               type: "string",
