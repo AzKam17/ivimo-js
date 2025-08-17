@@ -63,7 +63,10 @@ export class BaseRepository<T extends BaseEntity> {
     });
   }
 
-  public async findOneBy(where: Partial<T>, throwError: boolean = false): Promise<T | null> {
+  public async findOneBy<R extends boolean = false>(
+    where: Partial<T>, 
+    throwError?: R
+  ): Promise<R extends true ? T : T | null> {
     const entity = await this.repository.findOne({
       where: {
         ...where,
@@ -76,7 +79,7 @@ export class BaseRepository<T extends BaseEntity> {
       throw new Error("Entity not found");
     }
 
-    return entity;
+    return entity as any;
   }
 
   public async findBy(where: Partial<T>): Promise<T[]> {
