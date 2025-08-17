@@ -1,10 +1,10 @@
 import { UserRoleEnum } from "@/core/enums/enums";
 import { User } from "@/modules/auth/infrastructure/entities";
-import { Materials } from "@/modules/materials/infrastructure/entities";
+import { Materials, MaterialsOrder } from "@/modules/materials/infrastructure/entities";
 import { AbilityBuilder, createMongoAbility, PureAbility, InferSubjects } from "@casl/ability";
 
-type Action = "add" | "remove" | "update" | "read";
-type Subjects = InferSubjects<typeof Materials> | "all";
+type Action = "add" | "remove" | "update" | "read" | "details";
+type Subjects = InferSubjects<typeof Materials | typeof MaterialsOrder> | "all";
 
 type AppAbility = PureAbility<[Action, Subjects]>;
 
@@ -40,6 +40,9 @@ export class MemberAbilityFactory {
     can('remove', Materials, { supplier_id: user.id });
     can('update', Materials, { supplier_id: user.id });
     can('read', Materials);
+
+    can('read', MaterialsOrder);
+    can('details', MaterialsOrder, { supplier_id: user.id });
     return build();
   }
 }

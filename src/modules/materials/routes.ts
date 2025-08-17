@@ -11,5 +11,8 @@ export const routes = {
     },
     materials_category: {
         root: `${routePath}/category`,
+    },
+    order: {
+        search: `${routePath}-orders/search`,
     }
   }
