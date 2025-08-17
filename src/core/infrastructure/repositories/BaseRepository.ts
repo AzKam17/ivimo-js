@@ -11,11 +11,14 @@ interface BaseEntity {
 export class BaseRepository<T extends BaseEntity> {
   protected repository: Repository<T>;
 
-  constructor(entity: { new(): T }, dataSource: DataSource = AppDataSource) {
+  constructor(entity: { new (): T }, dataSource: DataSource = AppDataSource) {
     this.repository = dataSource.getRepository(entity);
   }
 
-  public async find(where: Partial<T>, roles: []): Promise<{ data: T[]; total: number; page: number; pageCount: number }> {
+  public async find(
+    where: Partial<T>,
+    roles: []
+  ): Promise<{ data: T[]; total: number; page: number; pageCount: number }> {
     const page: number = 1;
     const limit: number = 10;
     const skip = (page - 1) * limit;
@@ -23,7 +26,7 @@ export class BaseRepository<T extends BaseEntity> {
     const [data, total] = await this.repository.findAndCount({
       where: {
         ...where,
-        role: In(roles)
+        role: In(roles),
       } as FindOptionsWhere<T>,
       skip,
       take: limit,
@@ -60,15 +63,20 @@ export class BaseRepository<T extends BaseEntity> {
     });
   }
 
-
-  public async findOneBy(where: Partial<T>): Promise<T | null> {
-    return this.repository.findOne({
+  public async findOneBy(where: Partial<T>, throwError: boolean = false): Promise<T | null> {
+    const entity = await this.repository.findOne({
       where: {
         ...where,
         isActive: true,
         deletedAt: null,
       } as FindOptionsWhere<T>,
     });
+
+    if (throwError && !entity) {
+      throw new Error("Entity not found");
+    }
+
+    return entity;
   }
 
   public async findBy(where: Partial<T>): Promise<T[]> {
@@ -106,18 +114,18 @@ export class BaseRepository<T extends BaseEntity> {
     };
   }
 
-  public async findAllManyWithPagination(
-    dataRequest: {
-      where: Partial<T>,
-      page?: number,
-      limit?: number}): Promise<{ item: T[]; total: number; limit: number;  page: number; pageCount?: number }> {
+  public async findAllManyWithPagination(dataRequest: {
+    where: Partial<T>;
+    page?: number;
+    limit?: number;
+  }): Promise<{ item: T[]; total: number; limit: number; page: number; pageCount?: number }> {
     const page = dataRequest.page || 1;
     const limit = dataRequest.limit || 10;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.repository.findAndCount({
       where: {
-         ...dataRequest.where,
+        ...dataRequest.where,
         deletedAt: null,
       } as FindOptionsWhere<T>,
       skip,
@@ -172,7 +180,7 @@ export class BaseRepository<T extends BaseEntity> {
   }
 
   public async findOneByWhithoutParamIsActive(where: Partial<T>, throwError: boolean = false): Promise<T | null> {
-    console.log('\n identifiant ', where.id)
+    console.log("\n identifiant ", where.id);
     const user = await this.repository.findOne({
       where: {
         id: where.id,
@@ -187,7 +195,7 @@ export class BaseRepository<T extends BaseEntity> {
   }
 
   public async existsWhithoutIsActive(where: Partial<T>, throwError: boolean = false): Promise<boolean> {
-    console.log("where => ", where)
+    console.log("where => ", where);
     const count = await this.repository.count({
       where: {
         ...where,
@@ -208,11 +216,14 @@ export class BaseRepository<T extends BaseEntity> {
   }
 
   public async findByOr(conditions: Partial<T>[]): Promise<T[]> {
-    const whereConditions = conditions.map(condition => ({
-      ...condition,
-      isActive: true,
-      deletedAt: null,
-    } as FindOptionsWhere<T>));
+    const whereConditions = conditions.map(
+      (condition) =>
+        ({
+          ...condition,
+          isActive: true,
+          deletedAt: null,
+        } as FindOptionsWhere<T>)
+    );
 
     return this.repository.find({
       where: whereConditions, // Use array directly instead of Or(...whereConditions)
