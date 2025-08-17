@@ -3,8 +3,16 @@ import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
 import { Materials, MaterialsCategory } from "@/modules/materials/infrastructure/entities";
 import { rejectNonSupplierUser } from "@/modules/materials/infrastructure/services/misc";
-import { CreateMaterialCommand, CreateMaterialCommandHandler, UpdateMaterialCommand, UpdateMaterialCommandHandler } from "@/modules/materials/interface/commands";
-import { HideMaterialCommand, HideMaterialCommandHandler } from "@/modules/materials/interface/commands/hide-material.command";
+import {
+  CreateMaterialCommand,
+  CreateMaterialCommandHandler,
+  UpdateMaterialCommand,
+  UpdateMaterialCommandHandler,
+} from "@/modules/materials/interface/commands";
+import {
+  HideMaterialCommand,
+  HideMaterialCommandHandler,
+} from "@/modules/materials/interface/commands/hide-material.command";
 import { CreateMaterialDto, UpdateMaterialDto } from "@/modules/materials/interface/dtos";
 import {
   GetMaterialsCategoryQuery,
@@ -140,14 +148,14 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         parameters: [
           {
             name: "id",
-            in: 'path',
+            in: "path",
             description: "ID of the material to retrieve details on",
             required: true,
             schema: {
-              type: 'string'
-            }
+              type: "string",
+            },
           },
-        ]
+        ],
       },
     }
   )
@@ -180,19 +188,32 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
     }
   )
   .use(AuthRoutesPlugin)
-  .put(routes.materials.update, async({ user, params: { id }, body, commandMediator }: { user: User, params: { id: string }; body: any; commandMediator: CommandMediator }) => {
-    const result: Materials = await commandMediator.send(
-      new UpdateMaterialCommand({
-        ...body,
-        id,
-        supplier_id: user.id,
-      })
-    );
+  .put(
+    routes.materials.update,
+    async ({
+      user,
+      params: { id },
+      body,
+      commandMediator,
+    }: {
+      user: User;
+      params: { id: string };
+      body: any;
+      commandMediator: CommandMediator;
+    }) => {
+      const result: Materials = await commandMediator.send(
+        new UpdateMaterialCommand({
+          ...body,
+          id,
+          supplier_id: user.id,
+        })
+      );
 
-    return new MaterialsResponse({ ...result });
-  }, {
+      return new MaterialsResponse({ ...result });
+    },
+    {
       body: UpdateMaterialDto,
-    type: "formdata",
+      type: "formdata",
       response: {
         200: MaterialsResponsePropsResponseSchema,
       },
@@ -203,24 +224,36 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         parameters: [
           {
             name: "id",
-            in: 'path',
+            in: "path",
             description: "ID of the material to update",
             required: true,
             schema: {
-              type: 'string'
-            }
+              type: "string",
+            },
           },
-        ]
+        ],
       },
-  })
-  .post(routes.materials.hide, async({ user, params: { id }, commandMediator }: { user: User, params: { id: string }; commandMediator: CommandMediator }) => {
-    await commandMediator.send(
-      new HideMaterialCommand({
-        id,
-        supplier_id: user.id,
-      })
-    );
-  }, {
+    }
+  )
+  .post(
+    routes.materials.hide,
+    async ({
+      user,
+      params: { id },
+      commandMediator,
+    }: {
+      user: User;
+      params: { id: string };
+      commandMediator: CommandMediator;
+    }) => {
+      await commandMediator.send(
+        new HideMaterialCommand({
+          id,
+          supplier_id: user.id,
+        })
+      );
+    },
+    {
       detail: {
         tags: ["Materials"],
         summary: "Hide material",
@@ -228,13 +261,14 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         parameters: [
           {
             name: "id",
-            in: 'path',
+            in: "path",
             description: "ID of the material to hide",
             required: true,
             schema: {
-              type: 'string'
-            }
+              type: "string",
+            },
           },
-        ]
+        ],
       },
-  });
+    }
+  );
