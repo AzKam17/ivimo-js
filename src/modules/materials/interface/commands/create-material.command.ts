@@ -4,6 +4,7 @@ import { Materials } from "@/modules/materials/infrastructure/entities";
 import { MaterialsRepository, MaterialsCategoryRepository } from "@/modules/materials/infrastructure/repositories";
 import type { Metadata } from "@/core/types";
 import { FileUtilityPort, FileUtilityAdapter } from "@/core/infrastructure/file";
+import { formatImages, Guard } from "@/core/utils";
 
 export class CreateMaterialCommand extends BaseCommand {
   name: string;
@@ -45,13 +46,11 @@ export class CreateMaterialCommandHandler extends BaseCommandHandler<CreateMater
       });
     }
 
-    const images = Array.isArray(command.images) ? command.images : [command.images];
+    const images = formatImages(command.images);
 
     let imageUrls: string[] = [];
-    if (!!images) {
-      imageUrls = command.images
-        ? await Promise.all(images.filter((image) => !!image).map((image) => fileUtility.uploadFile(image)))
-        : [];
+    if (!Guard.isEmpty(images)) {
+      imageUrls = await Promise.all(images.filter((image) => !!image).map((image) => fileUtility.uploadFile(image)));
     }
 
     // Create the material

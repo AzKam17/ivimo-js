@@ -3,8 +3,8 @@ import { User } from "@/modules/auth/infrastructure/entities";
 import { AuthRoutesPlugin } from "@/modules/auth/plugins";
 import { Materials, MaterialsCategory } from "@/modules/materials/infrastructure/entities";
 import { rejectNonSupplierUser } from "@/modules/materials/infrastructure/services/misc";
-import { CreateMaterialCommand, CreateMaterialCommandHandler } from "@/modules/materials/interface/commands";
-import { CreateMaterialDto } from "@/modules/materials/interface/dtos";
+import { CreateMaterialCommand, CreateMaterialCommandHandler, UpdateMaterialCommand, UpdateMaterialCommandHandler } from "@/modules/materials/interface/commands";
+import { CreateMaterialDto, UpdateMaterialDto } from "@/modules/materials/interface/dtos";
 import {
   GetMaterialsCategoryQuery,
   GetMaterialsCategoryQueryHandler,
@@ -33,7 +33,10 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         [SearchMaterialsQuery, new SearchMaterialsQueryHandler()],
         [GetMaterialsDetailQuery, new GetMaterialsDetailQueryHandler()],
       ],
-      commands: [[CreateMaterialCommand, new CreateMaterialCommandHandler()]],
+      commands: [
+        [CreateMaterialCommand, new CreateMaterialCommandHandler()],
+        [UpdateMaterialCommand, new UpdateMaterialCommandHandler()],
+      ],
     });
   })
   .get(
@@ -162,7 +165,7 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
       return new MaterialsResponse({ ...result });
     },
     {
-      // body: CreateMaterialDto,
+      body: CreateMaterialDto,
       type: "formdata",
       response: {
         200: MaterialsResponsePropsResponseSchema,
@@ -173,4 +176,38 @@ export const MaterialsController = new Elysia({ prefix: "/materials" })
         description: "Create a new material",
       },
     }
-  );
+  )
+  .use(AuthRoutesPlugin)
+  .put(routes.materials.update, async({ user, params: { id }, body, commandMediator }: { user: User, params: { id: string }; body: any; commandMediator: CommandMediator }) => {
+    const result: Materials = await commandMediator.send(
+      new UpdateMaterialCommand({
+        ...body,
+        id,
+        supplier_id: user.id,
+      })
+    );
+
+    return new MaterialsResponse({ ...result });
+  }, {
+      body: UpdateMaterialDto,
+    type: "formdata",
+      response: {
+        200: MaterialsResponsePropsResponseSchema,
+      },
+      detail: {
+        tags: ["Materials"],
+        summary: "Update material",
+        description: "Update an existing material by id",
+        parameters: [
+          {
+            name: "id",
+            in: 'path',
+            description: "ID of the material to update",
+            required: true,
+            schema: {
+              type: 'string'
+            }
+          },
+        ]
+      },
+  });

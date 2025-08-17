@@ -5,6 +5,7 @@ export const routes = {
         root: `${routePath}`,
         search: `${routePath}/search`,
         detail: `${routePath}/:id`,
+        update: `${routePath}/:id`,
     },
     materials_category: {
         root: `${routePath}/category`,

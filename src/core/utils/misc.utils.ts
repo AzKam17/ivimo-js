@@ -9,3 +9,13 @@ export function randomOTP(params?: { length: number }) {
   const randomNum = Math.floor(Math.random() * (max + 1));
   return randomNum.toString().padStart(length, "0");
 }
+
+export function formatImages(images: File | File[] | undefined) : File[] {
+  if(!images) {
+    return [];
+  }
+  if(Array.isArray(images)) {
+    return images;
+  }
+  return [images];
+}
